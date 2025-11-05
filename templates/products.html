@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+</head>
+<body>
+    {% for product in products %}
+        {% if loop.index0 % 4 == 0 %}
+            <div class="row">
+        {% endif %}
+        
+        <div class="card">
+            <h3>{{ product.name }}</h3>
+            <p>Price: {{ product.price }}$</p>
+        </div>
+
+        {% if loop.index0 % 4 == 3 or loop.last %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

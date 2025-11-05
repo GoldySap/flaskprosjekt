@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="products">Products</button>
+    <button id="test">Test</button>
+
+<script>
+    $(document).ready(function() {
+        $('#products').click(function() {
+            $.get('/products', function(data){
+                products()
+            });
+        });
+        $('#test').click(function() {
+            $.get('/users', function(data){
+                users()
+            });
+        });
+    });
+</script>
+</body>
+</html>
