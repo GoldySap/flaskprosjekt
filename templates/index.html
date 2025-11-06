@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
-    <button id="products">Products</button>
-    <button id="test">Test</button>
-
-<script>
-    $(document).ready(function() {
-        $('#products').click(function() {
-            $.get('/products', function(data){
-                products()
-            });
-        });
-        $('#test').click(function() {
-            $.get('/users', function(data){
-                users()
-            });
-        });
-    });
-</script>
+    <header>
+        <h1>
+            ASI Netthandel
+        </h1>
+        <div id="headerbuttons">
+            <button id="products">Products</button>
+            <button id="test">Test</button>
+            <button>Login</button>
+        </div>
+    </header>
+    <main>
+        <h1>Welcomen</h1>
+    </main>
+    <footer>
+        Av Alexander Skjerve Isaksen
+    </footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>

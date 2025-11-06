@@ -4,9 +4,9 @@ import os
 import mariadb
 import functions
 
-dotenv.load_dotenv()
-
 app = Flask(__name__)
+
+dotenv.load_dotenv()
 
 #Default Values
 envhost = os.getenv("DB_HOST")
@@ -14,29 +14,31 @@ envuser = os.getenv("DB_USER")
 envpassword = os.getenv("DB_PASSWORD")
 envdatabase = os.getenv("DB_NAME")
 envtables = os.getenv("DB_TABLES").split(",")
-envtablecontent = os.getenv("DB_TABLECONTENT").split("|")
+envtablecontent = os.getenv("DB_TABLECONTENT").split(",")
 
 envdb = envdatabase
 
+try:
+    mydb = mariadb.connect(
+    host = envhost,
+    user = envuser,
+    password = envpassword,
+    )
+    mycursor = mydb.cursor()
+    functions.dbcheck(mycursor, envdb)
+    mydb = mariadb.connect(
+    host = envhost,
+    user = envuser,
+    password = envpassword,
+    database = envdb,
+    )
+    mycursor = mydb.cursor()
+    functions.tablecheck(mycursor, envtables, envtablecontent)
+    functions.testinsert(mycursor, mydb, envtables, mariadb)
+except mariadb.Error as e:
+    print(f"Error connecting to MariaDB: {e}")
+
 def get_db_connection():
-    try:
-        mydb = mariadb.connect(
-        host = envhost,
-        user = envuser,
-        password = envpassword,
-        )
-        mycursor = mydb.cursor()
-        functions.dbcheck(mycursor, envdb)
-        mydb = mariadb.connect(
-        host = envhost,
-        user = envuser,
-        password = envpassword,
-        database = envdb,
-        )
-        mycursor = mydb.cursor()
-        functions.tablecheck(mycursor, envtables, envtablecontent)
-    except mariadb.Error as e:
-        print(f"Error connecting to MariaDB: {e}")
     return mariadb.connect(
         host = envhost,
         user = envuser,
@@ -52,7 +54,7 @@ def index():
 def users():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM customers")
+    cursor.execute("SELECT * FROM users")
     result = cursor.fetchall()
     mydb.close()
     return render_template('test.html', users=result)
@@ -90,7 +92,7 @@ def products():
     cursor.execute("SELECT name, pris FROM products")
     result = cursor.fetchall()
     mydb.close()
-    return render_template('products.html', users=result)
+    return render_template('products.html', products=result)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,57 +1,47 @@
 def dbcheck(mycursor, db):
-    mycursor.execute("SHOW DATABASES")
+    mycursor.execute("SHOW DATABASES;")
     temp = [x[0] for x in mycursor]
     if db not in temp:
       mycursor.execute(f"CREATE DATABASE {db} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
       temp.append(db)
 
 def tablecheck(mycursor, envtables, envtablecontent):
-    mycursor.execute("SHOW TABLES")
+    mycursor.execute("SHOW TABLES;")
     temp = [x[0] for x in mycursor]
     for i, tablename in enumerate(envtables):
       con = envtablecontent[i]
       if tablename not in temp:
-          try:
-              mycursor.execute(f"CREATE TABLE {tablename} {con}")
-          except Exception as e:
-              print(f"Error creating table '{tablename}': {e}")
+          mycursor.execute(f"CREATE TABLE {tablename} ({con})")
+
+def tester(mycursor, mydb, xtable, val):
+    mycursor.execute(f"SELECT COUNT(*) FROM {xtable}")
+    count = mycursor.fetchone()[0]
+    if count == 0:
+        placeholders = ", ".join(["%s"] * len(val[0]))
+        mycursor.executemany(f"INSERT INTO {xtable} VALUES ({placeholders})", val)
+        mydb.commit()
 
 def testinsert(mycursor, mydb, envtables, mariadb):
   userval = [
-              ("alex", "alex@live.no", "", "karlgata 45", "kunde"),
-              ("stian", "stian@live.no", "", "karlgata 46", "kunde"),
-              ("petter", "petter@live.no", "", "karlgata 47", "kunde"),
+              ("alex", "alex@live.no", "alexpassword", "karlgata 45", "kunde"),
+              ("stian", "stian@live.no", "stianpassword", "karlgata 46", "kunde"),
+              ("petter", "petter@live.no", "petterpassword", "karlgata 47", "kunde")
             ]
   productval = [
-              ("Tine gulost", 99.99, "Beste osten i byen", 1),
+              ("Tine",  "gulost", 99.99, "Beste osten i byen", 1),
+              ("Tine", "lett melk", 59.99, "Beste melken i byen", 1)
             ]
   try:
-      atable = None
-      stable = None
+      utable = None
+      ptable = None
       for t in envtables:
           if "users" in t.lower():
+              utable = t
+          elif "products" in t.lower():
               ptable = t
-          if "products" in t.lower():
-              atable = t
-      if not ptable or not stable:
+      if not utable or not ptable:
           return
-      mycursor.execute(f"SELECT COUNT(*) FROM {atable}")
-      user_count = mycursor.fetchone()[0]
-      if user_count == 0:
-          unique_users = list({user for user, _ in userval})
-          user_inserts = [(user,) for user in unique_users]
-          mycursor.execute(f"SELECT * FROM {t} LIMIT 0")
-          dc = [cl[0] for cl in mycursor.description]
-          mycursor.executemany(f"INSERT INTO {atable} ({dc[0]}) VALUES (%s)", user_inserts)
-          mydb.commit()
-      mycursor.execute(f"SELECT COUNT(*) FROM {stable}")
-      product_count = mycursor.fetchone()[0]
-      if product_count == 0:
-          unique_products = list({product for product, _ in productval})
-          product_inserts = [(product,) for product in unique_products]
-          mycursor.execute(f"SELECT * FROM {t} LIMIT 0")
-          dc = [cl[0] for cl in mycursor.description]
-          mycursor.executemany(f"INSERT INTO {atable} ({dc[0]}) VALUES (%s)", product_inserts)
-          mydb.commit()
+      tester(mycursor, mydb, utable, userval, envtables)
+      tester(mycursor, mydb, ptable, productval, envtables)
   except mariadb.Error as e:
       print(f"Error connecting to MariaDB: {e}")
