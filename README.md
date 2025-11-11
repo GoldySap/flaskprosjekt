@@ -1,20 +1,21 @@
 # Flask-prosjekt -- Dokumentasjon
 ## 1. Forside
-Prosjekttittel: Nettbutikk
-Navn:
-Klasse:
-Dato:
+Prosjekttittel: Nettbutikk \
+Navn: Alexander \
+Klasse: 2IMI \
+Dato: 11.112025
 
-Kort beskrivelse av prosjektet:\ 
-Skriv 2--4 setninger om hva applikasjonen gjør og hvilket tema den bygger på.
+Kort beskrivelse av prosjektet: \
+Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
 
 ## 2. Systembeskrivelse
-Formål med applikasjonen:\ Forklar hva du ønsket å oppnå med prosjektet.
+Formål med applikasjonen: \
+Buttiken skal ha en product katalog, man skal kunne lage en konto, lege producter i din handlevågn, så skal en kvitering lages av kjøpet og loges under kjøp historikk.
 
-Brukerflyt:\ Beskriv hvordan brukeren bruker løsningen -- fra startside til lagring av data.
+Brukerflyt: \
+Brukeren starter på hjemmesiden som velkommer dem og viser et lite utvalg av dagens varer, så via navbaren skal de kunne navigere til andre deler av siden som for eksempel en produkt katalog og lage en konto for å lege til informasjonen derer og skape en kjøpe historikk.
 
-Teknologier brukt:
-
+Teknologier brukt: \
 Python / Flask\
 MariaDB\
 HTML / CSS / JS\
