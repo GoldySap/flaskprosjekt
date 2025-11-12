@@ -12,11 +12,9 @@ dotenv.load_dotenv()
 envhost = os.getenv("DB_HOST")
 envuser = os.getenv("DB_USER")
 envpassword = os.getenv("DB_PASSWORD")
-envdatabase = os.getenv("DB_NAME")
+envdb = os.getenv("DB_NAME")
 envtables = os.getenv("DB_TABLES").split(",")
-envtablecontent = os.getenv("DB_TABLECONTENT").split(",")
-
-envdb = envdatabase
+envtablecontent = os.getenv("DB_TABLECONTENT").split("|")
 
 try:
     mydb = mariadb.connect(
@@ -46,8 +44,14 @@ def get_db_connection():
         database = envdb
     )
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        inp = request.form['redirect']
+        if inp == "p":
+            return redirect('/products')
+        elif inp == "t":
+            return redirect('/users')
     return render_template('index.html')
 
 @app.route('/users')
@@ -63,9 +67,11 @@ def users():
 def update():
     cid = request.form['id']
     name = request.form['name']
+    email = request.form['email']
     address = request.form['address']
-    sql = "UPDATE users SET name=%s, address=%s WHERE id=%s"
-    val = (name, address, cid)
+    role = request.form['role']
+    sql = "UPDATE users SET name=%s, email=%s, address=%s, role=%s WHERE id=%s"
+    val = (name, email, address, role, cid)
     mydb = get_db_connection()
     cursor = mydb.cursor()
     cursor.execute(sql, val)
@@ -89,7 +95,7 @@ def delete():
 def products():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT name, pris FROM products")
+    cursor.execute("SELECT companyname, productname, cost FROM products")
     result = cursor.fetchall()
     mydb.close()
     return render_template('products.html', products=result)

@@ -1,3 +1,12 @@
+:root {
+    --light: rgb(255, 60, 60);
+    --main: rgb(255, 20, 20);
+    --shadow: rgb(155, 20, 20);
+    --dark: rgb(104, 20, 20);
+    --text: rgb(76, 76, 76);
+    --textweight: 600;
+}
+
 body {
     width: 100vw;
     display: flex;
@@ -5,14 +14,21 @@ body {
     justify-content: center;
     align-items: center;
     margin: 0;
+    font-family: "Geologica Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: var(--textweight);
 }
 
 header {
     display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
     justify-content:space-around;
     align-items: center;
     width: 100%;
-    box-shadow: black 0px 0px 5px 0px;
+    color: var(--text);
+    background-color: white;
+    /* box-shadow: gray 0px 0px 5px 0px; */
 }
 
 #headerbuttons {
@@ -23,21 +39,30 @@ header {
 }
 
 button {
-    background-color: black;
-    color: white;
-    box-shadow: black 0px 0px 5px 0px;
+    background-color: white;
+    color: var(--text);
+    /* box-shadow: var(--shadow) 0px 0px 5px 0px; */
     padding: 1vw 2vw 1vw 2vw;
-    border-radius: 10px;
+    outline: none;
+    border: none;
+    /* border-radius: 10px; */
+}
+
+button:hover {
+    color: var(--main);
+    /* box-shadow: var(--dark) 0px 0px 5px 0px; */
 }
 
 main {
     display: flex;
     width: 100%;
-    height: 40vh;
+    height: 80vh;
     justify-content: center;
     align-items: center;
     gap: 10%;
-    margin: 10%;
+    color: white;
+    background-color: var(--main);
+    /* background-image: linear-gradient(to bottom, var(--shadow), var(--main)); */
 }
 
 footer {
@@ -46,5 +71,6 @@ footer {
     align-items: center;
     width: 100%;
     height: 10vh;
-    box-shadow: black 0px 0px 5px 0px;
+    color: var(--text);
+    /* box-shadow: black 0px 0px 5px 0px; */
 }

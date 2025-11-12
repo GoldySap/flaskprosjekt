@@ -11,15 +11,24 @@ def tablecheck(mycursor, envtables, envtablecontent):
     for i, tablename in enumerate(envtables):
       con = envtablecontent[i]
       if tablename not in temp:
-          mycursor.execute(f"CREATE TABLE {tablename} ({con})")
+          mycursor.execute(f"CREATE TABLE IF NOT EXISTS {tablename} {con}")
 
 def tester(mycursor, mydb, xtable, val):
     mycursor.execute(f"SELECT COUNT(*) FROM {xtable}")
     count = mycursor.fetchone()[0]
     if count == 0:
-        placeholders = ", ".join(["%s"] * len(val[0]))
-        mycursor.executemany(f"INSERT INTO {xtable} VALUES ({placeholders})", val)
+        mycursor.execute(f"SELECT * FROM {xtable} LIMIT 0")
+        dc = [cl[0] for cl in mycursor.description]
+        if "id" in dc:
+          dc.remove("id")
+        elif "time" in dc:
+          dc.remove("time")
+        colnames = ", ".join(f"`{c}`" for c in dc)
+        print(colnames)
+        placeholders = ", ".join(["%s"] * len(dc))
+        mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
         mydb.commit()
+        print("testing4")
 
 def testinsert(mycursor, mydb, envtables, mariadb):
   userval = [
@@ -28,8 +37,8 @@ def testinsert(mycursor, mydb, envtables, mariadb):
               ("petter", "petter@live.no", "petterpassword", "karlgata 47", "kunde")
             ]
   productval = [
-              ("Tine",  "gulost", 99.99, "Beste osten i byen", 1),
-              ("Tine", "lett melk", 59.99, "Beste melken i byen", 1)
+              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", 1),
+              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", 2)
             ]
   try:
       utable = None
@@ -41,7 +50,9 @@ def testinsert(mycursor, mydb, envtables, mariadb):
               ptable = t
       if not utable or not ptable:
           return
-      tester(mycursor, mydb, utable, userval, envtables)
-      tester(mycursor, mydb, ptable, productval, envtables)
+      tester(mycursor, mydb, utable, userval)
+      print("testing5")
+      tester(mycursor, mydb, ptable, productval)
+      print("complete")
   except mariadb.Error as e:
       print(f"Error connecting to MariaDB: {e}")
