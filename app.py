@@ -31,8 +31,8 @@ try:
     database = envdb,
     )
     mycursor = mydb.cursor()
-    functions.tablecheck(mycursor, envtables, envtablecontent)
-    functions.testinsert(mycursor, mydb, envtables, mariadb)
+    # functions.tablecheck(mycursor, envtables, envtablecontent)
+    # functions.testinsert(mycursor, mydb, envtables, mariadb)
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB: {e}")
 
@@ -68,16 +68,17 @@ def update():
     cid = request.form['id']
     name = request.form['name']
     email = request.form['email']
+    password = request.form['password']
     address = request.form['address']
     role = request.form['role']
-    sql = "UPDATE users SET name=%s, email=%s, address=%s, role=%s WHERE id=%s"
-    val = (name, email, address, role, cid)
+    sql = "UPDATE users SET name=%s, email=%s, password=%s, address=%s, role=%s WHERE id=%s"
+    val = (name, email, password, address, role, cid)
     mydb = get_db_connection()
     cursor = mydb.cursor()
     cursor.execute(sql, val)
     mydb.commit()
     mydb.close()
-    return redirect('/')
+    return redirect('/users')
 
 @app.route('/users/delete', methods=['POST'])
 def delete():
@@ -89,13 +90,13 @@ def delete():
     cursor.execute(sql, val)
     mydb.commit()
     mydb.close()
-    return redirect('/')
+    return redirect('/users')
 
 @app.route('/products')
 def products():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT companyname, productname, cost FROM products")
+    cursor.execute("SELECT companyname, productname, cost, category, description, image FROM products")
     result = cursor.fetchall()
     mydb.close()
     return render_template('products.html', products=result)

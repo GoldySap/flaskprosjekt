@@ -28,7 +28,6 @@ def tester(mycursor, mydb, xtable, val):
         placeholders = ", ".join(["%s"] * len(dc))
         mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
         mydb.commit()
-        print("testing4")
 
 def testinsert(mycursor, mydb, envtables, mariadb):
   userval = [
@@ -51,8 +50,6 @@ def testinsert(mycursor, mydb, envtables, mariadb):
       if not utable or not ptable:
           return
       tester(mycursor, mydb, utable, userval)
-      print("testing5")
       tester(mycursor, mydb, ptable, productval)
-      print("complete")
   except mariadb.Error as e:
       print(f"Error connecting to MariaDB: {e}")
