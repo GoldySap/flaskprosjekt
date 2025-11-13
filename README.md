@@ -59,10 +59,19 @@ CREATE TABLE customers (
 
 ## 6. Programstruktur
 projectnavn/
- ├── app.py
- ├── templates/
  ├── static/
- └── .env
+      ├──css/
+      ├──images/
+      └──js/
+ ├── templates/
+      ├──index.html
+      ├──products.html
+        └──useradministration.html
+ ├── .env
+ ├── .gitingnore
+ ├── app.py
+ ├── functions.py
+ └── README.md
 Databasestrøm:
 
 HTML → Flask → MariaDB → Flask → HTML-tabell
