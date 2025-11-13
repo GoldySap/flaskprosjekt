@@ -24,7 +24,6 @@ def tester(mycursor, mydb, xtable, val):
         elif "time" in dc:
           dc.remove("time")
         colnames = ", ".join(f"`{c}`" for c in dc)
-        print(colnames)
         placeholders = ", ".join(["%s"] * len(dc))
         mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
         mydb.commit()
@@ -36,8 +35,8 @@ def testinsert(mycursor, mydb, envtables, mariadb):
               ("petter", "petter@live.no", "petterpassword", "karlgata 47", "kunde")
             ]
   productval = [
-              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", 1),
-              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", 2)
+              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", ""),
+              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", "")
             ]
   try:
       utable = None

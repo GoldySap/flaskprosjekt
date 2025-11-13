@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import dotenv
 import os
 import mariadb
@@ -31,8 +34,8 @@ try:
     database = envdb,
     )
     mycursor = mydb.cursor()
-    # functions.tablecheck(mycursor, envtables, envtablecontent)
-    # functions.testinsert(mycursor, mydb, envtables, mariadb)
+    functions.tablecheck(mycursor, envtables, envtablecontent)
+    functions.testinsert(mycursor, mydb, envtables, mariadb)
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB: {e}")
 
@@ -46,24 +49,63 @@ def get_db_connection():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        inp = request.form['redirect']
-        if inp == "p":
-            return redirect('/products')
-        elif inp == "t":
-            return redirect('/users')
     return render_template('index.html')
 
-@app.route('/users')
+@app.route("/registrer", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        brukernavn = request.form['name']
+        epost = request.form['email']
+        passord = generate_password_hash(request.form['passord'])
+
+        mydb = get_db_connection()
+        cursor = mydb.cursor()
+        cursor.execute("INSERT INTO users (name, email, passord_hash, address, role) VALUES (%s, %s, %s, %s)", 
+                       (brukernavn, epost, passord, 'bruker'))
+        mydb.commit()
+        cursor.close()
+        mydb.close()
+        flash("Bruker registrert!", "success")
+        return redirect(url_for("login"))
+    return render_template("registrer.html")
+
+app.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per 10 minutes")
+def login():
+    if request.method == "POST":
+        brukernavn = request.form['brukernavn']
+        passord = request.form['passord']
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE brukernavn=%s", (brukernavn,))
+        bruker = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if bruker and check_password_hash(bruker['passord_hash'], passord):
+            session['brukernavn'] = bruker['brukernavn']
+            session['rolle'] = bruker['rolle']
+
+            if bruker['rolle'] == 'admin':
+                return redirect(url_for("admin_dashboard"))
+            else:
+                return redirect(url_for("user_dashboard"))
+        else:
+            return render_template("login.html", feil_melding="Ugyldig brukernavn eller passord")
+
+    return render_template("login.html")
+
+@app.route('/useradministration')
 def users():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users")
     result = cursor.fetchall()
     mydb.close()
-    return render_template('test.html', users=result)
+    return render_template('useradministration.html', users=result)
 
-@app.route('/users/update', methods=['POST'])
+@app.route('/useradministration/update', methods=['POST'])
 def update():
     cid = request.form['id']
     name = request.form['name']
@@ -80,7 +122,7 @@ def update():
     mydb.close()
     return redirect('/users')
 
-@app.route('/users/delete', methods=['POST'])
+@app.route('/useradministration/delete', methods=['POST'])
 def delete():
     cid = request.form['id']
     sql = "DELETE FROM customers WHERE id=%s"

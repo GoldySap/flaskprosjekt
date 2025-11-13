@@ -5,6 +5,8 @@
     --dark: rgb(104, 20, 20);
     --text: rgb(76, 76, 76);
     --textweight: 600;
+    --textweight_light: 500;
+    --textweight_lighter: 400;
 }
 
 body {
@@ -18,8 +20,56 @@ body {
     font-weight: var(--textweight);
 }
 
-button {
-    font-weight: var(--textweight);
+header {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    justify-content:space-around;
+    align-items: center;
+    width: 100%;
+    color: var(--text);
+    background-color: white;
+}
+
+#headerbuttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 40%;
+}
+
+header a {
+    background-color: white;
+    text-decoration: none;
+    color: var(--text);
+    padding: 1vw 2vw 1vw 2vw;
+    outline: none;
+    border: none;
+}
+
+header a:hover {
+    color: var(--main);
+}
+
+main {
+    display: flex;
+    width: 100%;
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    color: white;
+    background-color: var(--main);
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+    color: var(--text);
 }
 
 .form {
@@ -45,7 +95,7 @@ button {
 
 .flex-column > label {
   color: #151717;
-  font-weight: 600;
+  font-weight: var(--textweight);
 }
 
 .inputForm {
@@ -85,14 +135,14 @@ button {
 .flex-row > div > label {
   font-size: 14px;
   color: black;
-  font-weight: 400;
+  font-weight: var(--textweight_lighter);
 }
 
 .span {
   font-size: 14px;
   margin-left: 5px;
   color: #2d79f3;
-  font-weight: 500;
+  font-weight: var(--textweight_light);
   cursor: pointer;
 }
 
@@ -102,7 +152,7 @@ button {
   border: none;
   color: white;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: var(--textweight_light);
   border-radius: 10px;
   height: 50px;
   width: 100%;
@@ -128,7 +178,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 500;
+  font-weight: var(--textweight_light);
   gap: 10px;
   border: 1px solid #ededef;
   background-color: white;
@@ -142,5 +192,9 @@ button {
 }
 
 .continue {
+    display: none;
+}
+
+.hidden {
     display: none;
 }
