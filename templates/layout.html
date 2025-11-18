@@ -11,14 +11,7 @@
 </head>
 <body>
     <div id="account">
-            <form class="form">
-                <!-- <div class="flex-column">
-                    <label>Name </label>
-                </div>
-                <div class="inputForm">
-                    <input type="text" class="input" placeholder="Enter your Name">
-                </div> -->
-
+            <form action="/update" method="post" class="form">
                 <div class="flex-column">
                     <label>Email </label>
                 </div>
@@ -72,8 +65,14 @@
         <div id="headerbuttons">
             <a href="/">Home</a>
             <a href="/products">Products</a>
-            <a href="/useradministration">Admin</a>
-            <a href="/">Login</a>
+            {% if login_in %}
+                {% if role = "admin" %}
+                    <a href="/useradministration">Admin</a>
+                {% endif %}
+                <a href="/profilepage">Profile</a>
+            {% else %}
+                <a href="/">Login</a>
+            {% endif %}
         </div>
     </header>
     <main>

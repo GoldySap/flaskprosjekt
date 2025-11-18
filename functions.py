@@ -30,9 +30,9 @@ def tester(mycursor, mydb, xtable, val):
 
 def testinsert(mycursor, mydb, envtables, mariadb):
   userval = [
-              ("alex", "alex@live.no", "alexpassword", "karlgata 45", "kunde"),
-              ("stian", "stian@live.no", "stianpassword", "karlgata 46", "kunde"),
-              ("petter", "petter@live.no", "petterpassword", "karlgata 47", "kunde")
+              ("alex@live.no", "alexpassword", 1, "kunde"),
+              ("stian@live.no", "stianpassword", 1,"kunde"),
+              ("petter@live.no", "petterpassword", 1,"kunde")
             ]
   productval = [
               ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", ""),

@@ -8,6 +8,10 @@ import mariadb
 import functions
 
 app = Flask(__name__)
+app.secret_key = os.getenv("KEY")
+
+limiter = Limiter(get_remote_address, app=app, default_limits=["3 per 10 minuter"])
+
 
 dotenv.load_dotenv()
 
@@ -73,28 +77,50 @@ app.route("/login", methods=["GET", "POST"])
 @limiter.limit("5 per 10 minutes")
 def login():
     if request.method == "POST":
-        brukernavn = request.form['brukernavn']
+        email = request.form['email']
         passord = request.form['passord']
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM users WHERE brukernavn=%s", (brukernavn,))
-        bruker = cursor.fetchone()
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cursor.fetchone()
         cursor.close()
         conn.close()
 
-        if bruker and check_password_hash(bruker['passord_hash'], passord):
-            session['brukernavn'] = bruker['brukernavn']
-            session['rolle'] = bruker['rolle']
-
-            if bruker['rolle'] == 'admin':
+        if user and check_password_hash(user['passord_hash'], passord):
+            session['name'] = user['name']
+            session['email'] = user['email']
+            session['role'] = user['role']
+            if user['role'] == 'admin':
                 return redirect(url_for("admin_dashboard"))
             else:
                 return redirect(url_for("user_dashboard"))
         else:
-            return render_template("login.html", feil_melding="Ugyldig brukernavn eller passord")
+            return render_template("login.html", feil_melding="Incorrect email or password")
 
     return render_template("login.html")
+
+@app.route("/admin")
+def admin_dashboard():
+    if session.get("rolle") == "admin":
+        return render_template("admin_dashboard.html", brukernavn=session['brukernavn'])
+    return redirect(url_for("login"))
+
+@app.route("/user")
+def user_dashboard():
+    if session.get("rolle") == "bruker":
+        return render_template("user_dashboard.html", brukernavn=session['brukernavn'])
+    return redirect(url_for("login"))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("Du har logget ut.", "info")
+    return redirect(url_for("login"))
+
+@app.route('/profilepage')
+def users():
+    return render_template('profilepage.html')
 
 @app.route('/useradministration')
 def users():
@@ -120,7 +146,7 @@ def update():
     cursor.execute(sql, val)
     mydb.commit()
     mydb.close()
-    return redirect('/users')
+    return redirect('/useradministration')
 
 @app.route('/useradministration/delete', methods=['POST'])
 def delete():
@@ -132,7 +158,7 @@ def delete():
     cursor.execute(sql, val)
     mydb.commit()
     mydb.close()
-    return redirect('/users')
+    return redirect('/useradministration')
 
 @app.route('/products')
 def products():
