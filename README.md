@@ -45,9 +45,14 @@ Skjermbilde (valgfritt)
 Refleksjon: Hvordan hjalp Kanban arbeidet?
 
 ## 5. Databasebeskrivelse
-Databasenavn:
+Databasenavn:nettbutikk
 
-Tabeller:\ | Tabell | Felt | Datatype | Beskrivelse | |--------|-------|-----------|--------------| | customers | id | INT | Primærnøkkel | | customers | name | VARCHAR(255) | Navn | | customers | address | VARCHAR(255) | Adresse |
+Tabeller:
+| Tabell | Felt | Datatype | Beskrivelse | 
+|--------|------|----------|-------------| 
+| customers | id | INT | Primærnøkkel | 
+| customers | name | VARCHAR(255) | Navn | 
+| customers | address | VARCHAR(255) | Adresse |
 
 SQL-eksempel:
 
@@ -59,19 +64,23 @@ CREATE TABLE customers (
 
 ## 6. Programstruktur
 projectnavn/
- ├── static/
-      ├──css/
-      ├──images/
-      └──js/
- ├── templates/
-      ├──index.html
-      ├──products.html
-        └──useradministration.html
- ├── .env
- ├── .gitingnore
- ├── app.py
- ├── functions.py
- └── README.md
+  ├ static/
+  ├    ├──css/
+  ├    ├  └──useradministration.html
+  ├    ├──images/
+  ├    └──js/
+  ├      └──useradministration.html
+  ├── templates/
+  ├    ├──index.html
+  ├    ├──layout.html
+  ├    ├──profilepage.html
+  ├    ├──products.html
+  ├    └──useradministration.html
+  ├── .env
+  ├── .gitingnore
+  ├── app.py
+  ├── functions.py
+  └── README.md
 Databasestrøm:
 
 HTML → Flask → MariaDB → Flask → HTML-tabell
