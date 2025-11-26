@@ -63,19 +63,19 @@ CREATE TABLE customers (
 );
 
 ## 6. Programstruktur
-projectnavn/
+projectnavn /
   ├ static/
-  ├    ├──css/
-  ├    ├  └──useradministration.html
-  ├    ├──images/
-  ├    └──js/
-  ├      └──useradministration.html
+  │    ├──css/
+  │    │  └──useradministration.html
+  │    ├──images/
+  │    └──js/
+  │      └──useradministration.html
   ├── templates/
-  ├    ├──index.html
-  ├    ├──layout.html
-  ├    ├──profilepage.html
-  ├    ├──products.html
-  ├    └──useradministration.html
+  │    ├──index.html
+  │    ├──layout.html
+  │    ├──profilepage.html
+  │    ├──products.html
+  │    └──useradministration.html
   ├── .env
   ├── .gitingnore
   ├── app.py
