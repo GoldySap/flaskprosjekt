@@ -10,7 +10,7 @@ import functions
 app = Flask(__name__)
 app.secret_key = os.getenv("KEY")
 
-limiter = Limiter(get_remote_address, app=app, default_limits=["3 per 10 minuter"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["20 per 10 minutes"])
 
 
 dotenv.load_dotenv()
@@ -55,75 +55,73 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
-# @app.route("/registrer", methods=["GET", "POST"])
-# def register():
-#     if request.method == "POST":
-#         brukernavn = request.form['name']
-#         epost = request.form['email']
-#         passord = generate_password_hash(request.form['passord'])
+@app.route("/registrer", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'])
 
-#         mydb = get_db_connection()
-#         cursor = mydb.cursor()
-#         cursor.execute("INSERT INTO users (name, email, passord_hash, address, role) VALUES (%s, %s, %s, %s)", 
-#                        (brukernavn, epost, passord, 'bruker'))
-#         mydb.commit()
-#         cursor.close()
-#         mydb.close()
-#         flash("Bruker registrert!", "success")
-#         return redirect(url_for("login"))
-#     return render_template("registrer.html")
+        mydb = get_db_connection()
+        cursor = mydb.cursor()
+        cursor.execute("INSERT INTO users (email, password, active, role) VALUES (%s, %s, %s, %s)", 
+                       (email, password, True, 'kunde'))
+        mydb.commit()
+        cursor.close()
+        mydb.close()
+        flash("User Registered", "success")
+        return redirect(url_for("index"))
+    return render_template("registrer.html")
 
-# app.route("/login", methods=["GET", "POST"])
-# @limiter.limit("5 per 10 minutes")
-# def login():
-#     if request.method == "POST":
-#         email = request.form['email']
-#         passord = request.form['passord']
+@app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per 10 minutes")
+def login():
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
 
-#         conn = get_db_connection()
-#         cursor = conn.cursor(dictionary=True)
-#         cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-#         user = cursor.fetchone()
-#         cursor.close()
-#         conn.close()
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
-#         if user and check_password_hash(user['passord_hash'], passord):
-#             session['name'] = user['name']
-#             session['email'] = user['email']
-#             session['role'] = user['role']
-#             if user['role'] == 'admin':
-#                 return redirect(url_for("admin_dashboard"))
-#             else:
-#                 return redirect(url_for("user_dashboard"))
-#         else:
-#             return render_template("login.html", feil_melding="Incorrect email or password")
-
-#     return render_template("login.html")
+        if user and check_password_hash(user['password'], password):
+            session['email'] = user['email']
+            session['role'] = user['role']
+            return redirect(url_for("index"))
+            # if user['role'] == 'admin':
+            #     return redirect(url_for("index"))
+            # else:
+            #     return redirect(url_for("index"))
+        else:
+            return render_template("login.html", feil_melding="Incorrect email or password")
+    return render_template("login.html")
 
 # @app.route("/admin")
 # def admin_dashboard():
-#     if session.get("rolle") == "admin":
-#         return render_template("admin_dashboard.html", brukernavn=session['brukernavn'])
+#     if session.get("role") == "admin":
+#         return render_template("index.html", brukernavn=session['brukernavn'])
 #     return redirect(url_for("login"))
 
 # @app.route("/user")
 # def user_dashboard():
-#     if session.get("rolle") == "bruker":
-#         return render_template("user_dashboard.html", brukernavn=session['brukernavn'])
-#     return render_template('profilepage.html')
-
-# @app.route("/logout")
-# def logout():
-#     session.clear()
-#     flash("Du har logget ut.", "info")
+#     if session.get("role") == "bruker":
+#         return render_template("index.html", brukernavn=session['brukernavn'])
 #     return redirect(url_for("login"))
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You logget out.", "info")
+    return redirect(url_for("login"))
+
 @app.route('/profilepage')
-def users():
+def profilepage():
     return render_template('profilepage.html')
 
 @app.route('/useradministration')
-def users():
+def administrateusers():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users")
@@ -168,6 +166,10 @@ def products():
     result = cursor.fetchall()
     mydb.close()
     return render_template('products.html', products=result)
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+    return render_template('cart.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

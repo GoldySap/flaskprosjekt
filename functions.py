@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 def dbcheck(mycursor, db):
     mycursor.execute("SHOW DATABASES;")
     temp = [x[0] for x in mycursor]
@@ -30,13 +32,13 @@ def tester(mycursor, mydb, xtable, val):
 
 def testinsert(mycursor, mydb, envtables, mariadb):
   userval = [
-              ("alex@live.no", "alexpassword", 1, "kunde"),
-              ("stian@live.no", "stianpassword", 1,"kunde"),
-              ("petter@live.no", "petterpassword", 1,"kunde")
+              ("admin@live.no", generate_password_hash("hemmelig123"), 1, "admin"),
+              ("stian@live.no", generate_password_hash("stianpassword"), 1,"kunde"),
+              ("petter@live.no", generate_password_hash("petterpassword"), 1,"kunde")
             ]
   productval = [
-              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", ""),
-              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", "")
+              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", 1),
+              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", 1)
             ]
   try:
       utable = None

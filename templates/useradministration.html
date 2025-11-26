@@ -14,7 +14,7 @@
         </tr>
         {% for user in users %}
         <tr>
-          <form action="/update" method="post" class="edit-form">
+          <form action="/useradministration/update" method="post" class="edit-form">
             <td>{{ user.id }}
             <input type="hidden" name="id" value="{{ user.id }}"></td>
             <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.name }}</td>
