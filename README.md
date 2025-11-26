@@ -64,11 +64,11 @@ CREATE TABLE customers (
 
 ## 6. Programstruktur
 projectnavn /
-  ├ static/
-  │    ├──css/
+  ├ static /
+  │    ├──css /
   │    │  └──useradministration.html
-  │    ├──images/
-  │    └──js/
+  │    ├──images /
+  │    └──js /
   │      └──useradministration.html
   ├── templates/
   │    ├──index.html
