@@ -55,68 +55,68 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
-@app.route("/registrer", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        brukernavn = request.form['name']
-        epost = request.form['email']
-        passord = generate_password_hash(request.form['passord'])
+# @app.route("/registrer", methods=["GET", "POST"])
+# def register():
+#     if request.method == "POST":
+#         brukernavn = request.form['name']
+#         epost = request.form['email']
+#         passord = generate_password_hash(request.form['passord'])
 
-        mydb = get_db_connection()
-        cursor = mydb.cursor()
-        cursor.execute("INSERT INTO users (name, email, passord_hash, address, role) VALUES (%s, %s, %s, %s)", 
-                       (brukernavn, epost, passord, 'bruker'))
-        mydb.commit()
-        cursor.close()
-        mydb.close()
-        flash("Bruker registrert!", "success")
-        return redirect(url_for("login"))
-    return render_template("registrer.html")
+#         mydb = get_db_connection()
+#         cursor = mydb.cursor()
+#         cursor.execute("INSERT INTO users (name, email, passord_hash, address, role) VALUES (%s, %s, %s, %s)", 
+#                        (brukernavn, epost, passord, 'bruker'))
+#         mydb.commit()
+#         cursor.close()
+#         mydb.close()
+#         flash("Bruker registrert!", "success")
+#         return redirect(url_for("login"))
+#     return render_template("registrer.html")
 
-app.route("/login", methods=["GET", "POST"])
-@limiter.limit("5 per 10 minutes")
-def login():
-    if request.method == "POST":
-        email = request.form['email']
-        passord = request.form['passord']
+# app.route("/login", methods=["GET", "POST"])
+# @limiter.limit("5 per 10 minutes")
+# def login():
+#     if request.method == "POST":
+#         email = request.form['email']
+#         passord = request.form['passord']
 
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
+#         conn = get_db_connection()
+#         cursor = conn.cursor(dictionary=True)
+#         cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+#         user = cursor.fetchone()
+#         cursor.close()
+#         conn.close()
 
-        if user and check_password_hash(user['passord_hash'], passord):
-            session['name'] = user['name']
-            session['email'] = user['email']
-            session['role'] = user['role']
-            if user['role'] == 'admin':
-                return redirect(url_for("admin_dashboard"))
-            else:
-                return redirect(url_for("user_dashboard"))
-        else:
-            return render_template("login.html", feil_melding="Incorrect email or password")
+#         if user and check_password_hash(user['passord_hash'], passord):
+#             session['name'] = user['name']
+#             session['email'] = user['email']
+#             session['role'] = user['role']
+#             if user['role'] == 'admin':
+#                 return redirect(url_for("admin_dashboard"))
+#             else:
+#                 return redirect(url_for("user_dashboard"))
+#         else:
+#             return render_template("login.html", feil_melding="Incorrect email or password")
 
-    return render_template("login.html")
+#     return render_template("login.html")
 
-@app.route("/admin")
-def admin_dashboard():
-    if session.get("rolle") == "admin":
-        return render_template("admin_dashboard.html", brukernavn=session['brukernavn'])
-    return redirect(url_for("login"))
+# @app.route("/admin")
+# def admin_dashboard():
+#     if session.get("rolle") == "admin":
+#         return render_template("admin_dashboard.html", brukernavn=session['brukernavn'])
+#     return redirect(url_for("login"))
 
-@app.route("/user")
-def user_dashboard():
-    if session.get("rolle") == "bruker":
-        return render_template("user_dashboard.html", brukernavn=session['brukernavn'])
-    return redirect(url_for("login"))
+# @app.route("/user")
+# def user_dashboard():
+#     if session.get("rolle") == "bruker":
+#         return render_template("user_dashboard.html", brukernavn=session['brukernavn'])
+#     return render_template('profilepage.html')
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    flash("Du har logget ut.", "info")
-    return redirect(url_for("login"))
+# @app.route("/logout")
+# def logout():
+#     session.clear()
+#     flash("Du har logget ut.", "info")
+#     return redirect(url_for("login"))
 
 @app.route('/profilepage')
 def users():
