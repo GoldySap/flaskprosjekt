@@ -50,9 +50,36 @@ Databasenavn:nettbutikk
 Tabeller:
 | Tabell | Felt | Datatype | Beskrivelse | 
 |--------|------|----------|-------------| 
-| customers | id | INT | Primærnøkkel | 
-| customers | name | VARCHAR(255) | Navn | 
-| customers | address | VARCHAR(255) | Adresse |
+| users | id | INT | Primærnøkkel | 
+| users | email | VARCHAR(255) | Navn | 
+| users | password | VARCHAR(255) | Adresse |
+| users | active | BOOL | Navn | 
+| users | role | VARCHAR(255) | Adresse |
+
+
+| Tabell | Felt | Datatype | Beskrivelse | 
+|--------|------|----------|-------------| 
+| products | id | INT | Primærnøkkel | 
+| products | name | VARCHAR(255) | Navn | 
+| products | address | VARCHAR(255) | Adresse |
+
+| Tabell | Felt | Datatype | Beskrivelse | 
+|--------|------|----------|-------------| 
+| credentials | id | INT | Primærnøkkel | 
+| credentials | name | VARCHAR(255) | Navn | 
+| credentials | address | VARCHAR(255) | Adresse |
+
+| Tabell | Felt | Datatype | Beskrivelse | 
+|--------|------|----------|-------------| 
+| billing | id | INT | Primærnøkkel | 
+| billing | name | VARCHAR(255) | Navn | 
+| billing | address | VARCHAR(255) | Adresse |
+
+| Tabell | Felt | Datatype | Beskrivelse | 
+|--------|------|----------|-------------| 
+| recipt | id | INT | Primærnøkkel | 
+| recipt | name | VARCHAR(255) | Navn | 
+| recipt | address | VARCHAR(255) | Adresse |
 
 SQL-eksempel:
 
@@ -69,7 +96,8 @@ projectnavn /
   │    │  └──useradministration.html
   │    ├──images /
   │    └──js /
-  │      └──useradministration.html
+  │       ├──layout.js
+  │       └──loginregister.js
   ├── templates/
   │    ├──index.html
   │    ├──layout.html
@@ -80,6 +108,7 @@ projectnavn /
   ├── .gitingnore
   ├── app.py
   ├── functions.py
+  ├── inspiration.py
   └── README.md
 Databasestrøm:
 
@@ -89,10 +118,10 @@ HTML → Flask → MariaDB → Flask → HTML-tabell
 Forklar ruter og funksjoner (kort).
 
 ## 8. Sikkerhet og pålitelighet
-.env\
-Miljøvariabler\
-Parameteriserte spørringer\
-Validering\
+.env \
+Miljøvariabler \
+Parameteriserte spørringer \
+Validering \
 Feilhåndtering
 
 ## 9. Feilsøking og testing
