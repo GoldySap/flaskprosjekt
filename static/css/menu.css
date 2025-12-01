@@ -1,3 +1,16 @@
+header button { 
+    background-color: #c33; 
+    color: white; border: none; 
+    padding: 4px 8px; 
+    cursor: pointer; 
+    border-radius: 5px;
+    box-shadow: rgba(100, 100, 100, 0.525) 0px 0px 2px 2px;
+}
+
+header button:hover { 
+    background-color: #a00; 
+}
+
 .menu {
   display: flex;
   position: fixed;
@@ -56,7 +69,7 @@
   transform: translate(1px, -1px);
 }
 .menu .list .delete:hover {
-  background-color: #8e2a2a;
+  background-color: #c33;
 }
 
 .menu .list .element:active {

@@ -1,232 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern Cart</title>
+{% extends "layout.html" %}
 
-    <style>
-        body {
-            margin: 0;
-            background: #f1f4f9;
-            font-family: "Inter", Arial, sans-serif;
-            padding: 30px;
-        }
+{% block content %}
 
-        .cart-container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
+    <h1>Your Shopping Cart</h1>
 
-        h1 {
-            margin-bottom: 25px;
-            font-size: 2rem;
-        }
+    {% if cart|length == 0 %}
+        <p>Your cart is empty.</p>
+    {% else %}
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
 
-        .cart-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 0;
-            border-bottom: 1px solid #e5e5e5;
-        }
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>${{ item.price }}</td>
+                    <td>${{ item.subtotal }}</td>
+                    <td><a href="/remove/{{ item.id }}">Remove</a></td>
+                </tr>
+            {% endfor %}
+        </table>
 
-        .item-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        <h3>Total: ${{ total }}</h3>
+    {% endif %}
 
-        .item-info img {
-            width: 90px;
-            height: 90px;
-            border-radius: 12px;
-            object-fit: cover;
-        }
+    <a href="/">Back to products</a
 
-        .item-details .title {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .item-details .price {
-            margin-top: 5px;
-            color: #6b7280;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quantity-controls button,
-        .remove-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #e5e7eb;
-            transition: 0.15s;
-        }
-
-        .quantity-controls button:hover,
-        .remove-btn:hover {
-            background: #d1d5db;
-        }
-
-        .remove-btn {
-            background: #ef4444;
-            color: white;
-        }
-
-        .remove-btn:hover {
-            background: #dc2626;
-        }
-
-        .cart-total {
-            margin-top: 25px;
-            text-align: right;
-            font-size: 1.6rem;
-            font-weight: 700;
-        }
-
-        .checkout-btn {
-            margin-top: 20px;
-            padding: 15px 25px;
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            float: right;
-            transition: 0.2s;
-        }
-    </style>
-</head>
-<body>
-
-<div class="cart-container">
-    <h1>Your Cart</h1>
-
-    <div class="cart-item" data-price="19.99" data-name="Example Product">
-        <div class="item-info">
-            <img src="https://via.placeholder.com/90" alt="">
-            <div class="item-details">
-                <div class="title">Example Product</div>
-                <div class="price">$19.99</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="quantity-controls">
-                <button class="minus">−</button>
-                <span class="quantity-display">1</span>
-                <button class="plus">+</button>
-            </div>
-            <button class="remove-btn">Remove</button>
-        </div>
-    </div>
-
-    <div class="cart-item" data-price="9.49" data-name="Another Item">
-        <div class="item-info">
-            <img src="https://via.placeholder.com/90" alt="">
-            <div class="item-details">
-                <div class="title">Another Item</div>
-                <div class="price">$9.49</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="quantity-controls">
-                <button class="minus">−</button>
-                <span class="quantity-display">2</span>
-                <button class="plus">+</button>
-            </div>
-            <button class="remove-btn">Remove</button>
-        </div>
-    </div>
-
-    <div class="cart-total">Total: $0.00</div>
-
-    <button class="checkout-btn">Checkout</button>
-</div>
-
-<script>
-    function updateTotal() {
-        let total = 0;
-        document.querySelectorAll(".cart-item").forEach(item => {
-            const price = parseFloat(item.dataset.price);
-            const qty = parseInt(item.querySelector(".quantity-display").innerText);
-            total += price * qty;
-        });
-        document.querySelector(".cart-total").innerText = "Total: $" + total.toFixed(2);
-    }
-
-    document.querySelectorAll(".cart-item").forEach(item => {
-        const minusBtn = item.querySelector(".minus");
-        const plusBtn = item.querySelector(".plus");
-        const display = item.querySelector(".quantity-display");
-        const removeBtn = item.querySelector(".remove-btn");
-
-        minusBtn.onclick = () => {
-            let qty = parseInt(display.innerText);
-            if (qty > 1) display.innerText = qty - 1;
-            updateTotal();
-        };
-
-        plusBtn.onclick = () => {
-            display.innerText = parseInt(display.innerText) + 1;
-            updateTotal();
-        };
-
-        removeBtn.onclick = () => {
-            item.remove();
-            updateTotal();
-        };
-    });
-
-    updateTotal();
-
-    document.querySelector(".checkout-btn").onclick = async () => {
-
-        const items = [];
-        document.querySelectorAll(".cart-item").forEach(item => {
-            items.push({
-                name: item.dataset.name,
-                price: parseFloat(item.dataset.price),
-                quantity: parseInt(item.querySelector(".quantity-display").innerText)
-            });
-        });
-
-        if (items.length === 0) {
-            alert("Your cart is empty!");
-            return;
-        }
-
-        const res = await fetch("/checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items })
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-            alert("Purchase completed!");
-
-            document.querySelectorAll(".cart-item").forEach(i => i.remove());
-            updateTotal();
-        } else {
-            alert("Checkout failed!");
-        }
-    };
-</script>
-
-</body>
-</html>
+{%  endblock %}

@@ -10,7 +10,7 @@ import functions
 app = Flask(__name__)
 app.secret_key = os.getenv("KEY")
 
-limiter = Limiter(get_remote_address, app=app, default_limits=["30 per 10 minutes"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["100 per 10 minutes"])
 
 
 dotenv.load_dotenv()
@@ -94,11 +94,11 @@ def login():
             return render_template("login.html", feil_melding="Incorrect email or password")
     return render_template("login.html")
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["GET", "POST"])
 def logout():
     session.clear()
     flash("You logget out.", "info")
-    return {"message": "You have been logged out successfully."}, 200
+    return redirect("/")
 
 @app.route('/profilepage')
 def profilepage():
@@ -155,26 +155,49 @@ def products():
 def cart():
     return render_template('cart.html')
 
+# @app.route('/routing', methods=['POST'])
+# def routing():
+#     data = request.get_json(force=True)
+#     print("RECEIVED:", data)
+#     if not data or "param" not in data:
+#         return {"message": "Invalid request"}, 400
+    
+#     route = data["param"]
+    
+#     if route == "profile":
+#         return redirect(url_for("logout"))
+#     if route == "settings":
+#         return redirect(url_for("logout"))
+#     if route == "logout":
+#         return redirect(url_for("logout"))
+#     if route == "useradministration" and session.get('role') == "admin":
+#         return redirect(url_for("useradministration"))
+#     if route == "productadministration" and session.get('role') == "admin":
+#         return redirect(url_for("productadministration"))
+#     return {"message": "Invalid request"}, 400
+
 @app.route('/routing', methods=['POST'])
 def routing():
     data = request.get_json(force=True)
-    print("RECEIVED:", data)
+    
     if not data or "param" not in data:
         return {"message": "Invalid request"}, 400
     
     route = data["param"]
-    
-    if route == "profile":
-        return redirect(url_for("logout"))
-    if route == "settings":
-        return redirect(url_for("logout"))
-    if route == "logout":
-        return redirect(url_for("logout"))
-    if route == "useradministration" and session.get('role') == "admin":
-        return redirect(url_for("useradministration"))
-    if route == "productadministration" and session.get('role') == "admin":
-        return redirect(url_for("productadministration"))
-    return {"message": "Invalid request"}, 400
+  
+    match route:
+        case ["profile", "settings", "logout"]:
+            return {"redirect": url_for(route)}
+        case "useradministration":
+            if session.get("role") == "admin":
+                return {"redirect": url_for('administrateusers')}
+            return {"message": "You do not have permission"}, 403
+        case "productadministration":
+            if session.get("role") == "admin":
+                return {"redirect": url_for("productadministration")}
+            return {"message": "You do not have permission"}, 403
+    return {"message": "Unknown route"}, 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)
