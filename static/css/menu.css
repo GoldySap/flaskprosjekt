@@ -1,6 +1,8 @@
-/* From Uiverse.io by imtausef */ 
 .menu {
-  width: 200px;
+  display: flex;
+  position: fixed;
+  margin-top: 600px;
+  width: 10%;
   background-color: rgb(255, 255, 255);
   background-image: linear-gradient(
     139deg,
@@ -10,10 +12,13 @@
   );
 
   border-radius: 10px;
-  padding: 15px 0px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+}
+
+.menu .separator {
+  border-top: 1.5px solid #42434a;
 }
 
 .menu .list {
@@ -50,7 +55,6 @@
   color: #fff;
   transform: translate(1px, -1px);
 }
-
 .menu .list .delete:hover {
   background-color: #8e2a2a;
 }
@@ -59,11 +63,7 @@
   transform: scale(0.99);
 }
 
-.menu .list:not(:last-child) .element:hover svg {
-  stroke: #fff;
-}
-
-.menu .list:last-child svg {
+/* .menu .list:last-child svg {
   stroke: #bd89ff;
 }
 .menu .list:last-child .element {
@@ -72,4 +72,4 @@
 
 .menu .list:last-child .element:hover {
   background-color: rgba(0, 0, 0, 0.85);
-}
+} */

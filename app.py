@@ -10,7 +10,7 @@ import functions
 app = Flask(__name__)
 app.secret_key = os.getenv("KEY")
 
-limiter = Limiter(get_remote_address, app=app, default_limits=["20 per 10 minutes"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["30 per 10 minutes"])
 
 
 dotenv.load_dotenv()
@@ -90,31 +90,15 @@ def login():
             session['email'] = user['email']
             session['role'] = user['role']
             return redirect(url_for("index"))
-            # if user['role'] == 'admin':
-            #     return redirect(url_for("index"))
-            # else:
-            #     return redirect(url_for("index"))
         else:
             return render_template("login.html", feil_melding="Incorrect email or password")
     return render_template("login.html")
 
-# @app.route("/admin")
-# def admin_dashboard():
-#     if session.get("role") == "admin":
-#         return render_template("index.html", brukernavn=session['brukernavn'])
-#     return redirect(url_for("login"))
-
-# @app.route("/user")
-# def user_dashboard():
-#     if session.get("role") == "bruker":
-#         return render_template("index.html", brukernavn=session['brukernavn'])
-#     return redirect(url_for("login"))
-
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
 def logout():
     session.clear()
     flash("You logget out.", "info")
-    return redirect(url_for("login"))
+    return {"message": "You have been logged out successfully."}, 200
 
 @app.route('/profilepage')
 def profilepage():
@@ -170,6 +154,27 @@ def products():
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
     return render_template('cart.html')
+
+@app.route('/routing', methods=['POST'])
+def routing():
+    data = request.get_json(force=True)
+    print("RECEIVED:", data)
+    if not data or "param" not in data:
+        return {"message": "Invalid request"}, 400
+    
+    route = data["param"]
+    
+    if route == "profile":
+        return redirect(url_for("logout"))
+    if route == "settings":
+        return redirect(url_for("logout"))
+    if route == "logout":
+        return redirect(url_for("logout"))
+    if route == "useradministration" and session.get('role') == "admin":
+        return redirect(url_for("useradministration"))
+    if route == "productadministration" and session.get('role') == "admin":
+        return redirect(url_for("productadministration"))
+    return {"message": "Invalid request"}, 400
 
 if __name__ == '__main__':
     app.run(debug=True)
