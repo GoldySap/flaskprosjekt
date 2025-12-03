@@ -6,9 +6,7 @@
     <title>ASI Netthandel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/loginregister.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/useradministration.css') }}">
+    {% block styles %}{%  endblock %}
 </head>
 <body>
     <header>
@@ -20,7 +18,7 @@
             {% if session.get('email') %}
                 {% if session.get('role') == "admin" %}
                     <button>Admin</button>
-                    <div class="menu">
+                    <div id="menu">
                         <ul class="list">
                             <li class="element" id="useradministration">
                                 <svg

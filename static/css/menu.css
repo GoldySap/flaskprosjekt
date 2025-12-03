@@ -11,11 +11,12 @@ header button:hover {
     background-color: #a00; 
 }
 
-.menu {
+#menu {
   display: flex;
   position: fixed;
-  margin-top: 600px;
-  width: 10%;
+  margin-top: 20rem;
+  margin-left: 32%;
+  width: 9rem;
   background-color: rgb(255, 255, 255);
   background-image: linear-gradient(
     139deg,
@@ -25,16 +26,15 @@ header button:hover {
   );
 
   border-radius: 10px;
-  display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.menu .separator {
+#menu .separator {
   border-top: 1.5px solid #42434a;
 }
 
-.menu .list {
+#menu .list {
   list-style-type: none;
   display: flex;
   flex-direction: column;
@@ -42,7 +42,7 @@ header button:hover {
   padding: 0px 10px;
 }
 
-.menu .list .element {
+#menu .list .element {
   display: flex;
   align-items: center;
   color: #141414;
@@ -53,36 +53,36 @@ header button:hover {
   cursor: pointer;
 }
 
-.menu .list .element svg {
+#menu .list .element svg {
   width: 19px;
   height: 19px;
   transition: all 0.3s ease-out;
 }
 
-.menu .list .element .label {
+#menu .list .element .label {
   font-weight: 600;
 }
 
-.menu .list .element:hover {
+#menu .list .element:hover {
   background-color: #5353ff;
   color: #fff;
   transform: translate(1px, -1px);
 }
-.menu .list .delete:hover {
+#menu .list .delete:hover {
   background-color: #c33;
 }
 
-.menu .list .element:active {
+#menu .list .element:active {
   transform: scale(0.99);
 }
 
-/* .menu .list:last-child svg {
+/* #menu .list:last-child svg {
   stroke: #bd89ff;
 }
-.menu .list:last-child .element {
+#menu .list:last-child .element {
   color: #bd89ff;
 }
 
-.menu .list:last-child .element:hover {
+#menu .list:last-child .element:hover {
   background-color: rgba(0, 0, 0, 0.85);
 } */

@@ -142,39 +142,96 @@ def delete():
     mydb.close()
     return redirect('/useradministration')
 
-@app.route('/products')
-def products():
+# @app.route('/products')
+# def products():
+#     mydb = get_db_connection()
+#     cursor = mydb.cursor(dictionary=True)
+#     cursor.execute("SELECT companyname, productname, cost, category, description, image FROM products")
+#     result = cursor.fetchall()
+#     mydb.close()
+#     return render_template('products.html', products=result)
+
+def productlistings():
     mydb = get_db_connection()
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT companyname, productname, cost, category, description, image FROM products")
+    cursor.execute("SELECT * FROM products")
     result = cursor.fetchall()
     mydb.close()
-    return render_template('products.html', products=result)
+    return result
 
-@app.route('/cart', methods=['GET', 'POST'])
+def init_cart():
+    if "cart" not in session:
+        session["cart"] = {}
+
+def add_to_cart(product_id, quantity):
+    init_cart()
+    cart = session["cart"]
+
+    product_id = str(product_id)
+    quantity = int(quantity)
+
+    if product_id in cart:
+        cart[product_id] += quantity
+    else:
+        cart[product_id] = quantity
+
+    session["cart"] = cart
+
+
+def remove_from_cart(product_id):
+    init_cart()
+    cart = session["cart"]
+    cart.pop(str(product_id), None)
+    session["cart"] = cart
+
+@app.route("/products")
+def products():
+    result = productlistings()
+    return render_template("products.html", products=result)
+
+
+@app.route("/add", methods=["POST"])
+def add():
+    product_id = request.form.get("product_id")
+    quantity = request.form.get("quantity", 1)
+    add_to_cart(product_id, quantity)
+    return redirect(url_for("cart"))
+
+
+@app.route("/cart")
 def cart():
-    return render_template('cart.html')
+    result = productlistings()
+    init_cart()
+    cart_items = []
+    total = 0
 
-# @app.route('/routing', methods=['POST'])
-# def routing():
-#     data = request.get_json(force=True)
-#     print("RECEIVED:", data)
-#     if not data or "param" not in data:
-#         return {"message": "Invalid request"}, 400
-    
-#     route = data["param"]
-    
-#     if route == "profile":
-#         return redirect(url_for("logout"))
-#     if route == "settings":
-#         return redirect(url_for("logout"))
-#     if route == "logout":
-#         return redirect(url_for("logout"))
-#     if route == "useradministration" and session.get('role') == "admin":
-#         return redirect(url_for("useradministration"))
-#     if route == "productadministration" and session.get('role') == "admin":
-#         return redirect(url_for("productadministration"))
-#     return {"message": "Invalid request"}, 400
+    for pid, qty in session["cart"].items():
+        product = None
+        for p in result:
+            if str(p["id"]) == pid:
+                product = p
+                break
+        print("PRODUCTS:", result)
+        if product:
+            subtotal = product["cost"] * qty
+            total += subtotal
+            cart_items.append({
+                "name": product["productname"],
+                "price": product["cost"],
+                "qty": qty,
+                "subtotal": subtotal,
+                "id": pid,
+                "image": product["image"]
+            })
+
+    return render_template("cart.html", cart=cart_items, total=total)
+
+
+@app.route("/cart/remove/<id>")
+def remove(id):
+    remove_from_cart(id)
+    return redirect(url_for("cart"))
+
 
 @app.route('/routing', methods=['POST'])
 def routing():

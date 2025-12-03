@@ -1,7 +1,80 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    
-    <h1>Profile page</h1>
+<div class="container">
+<h2>User Profile</h2>
+
+<div class="tabs">
+<div class="tab active" data-target="info">Profile Info</div>
+<div class="tab" data-target="billing">Bank & Billing Info</div>
+<div class="tab" data-target="settings">Settings</div>
+</div>
+
+
+<div id="info" class="section active">
+<h3>Personal Information</h3>
+<form id="infoForm">
+<label>Name</label>
+<input name="name" type="text" />
+
+
+<label>Email</label>
+<input name="email" type="email" />
+
+
+<label>Phone</label>
+<input name="phone" type="tel" />
+
+
+<button type="submit">Save</button>
+</form>
+</div>
+
+
+<div id="billing" class="section">
+<h3>Bank & Billing Information</h3>
+<form id="billingForm">
+<label>Card Number</label>
+<input name="card" type="text" />
+
+
+<label>Expiration</label>
+<input name="exp" type="text" />
+
+
+<label>CVV</label>
+<input name="cvv" type="password" />
+
+
+<label>Billing Address</label>
+<input name="address" type="text" />
+
+
+<button type="submit">Save</button>
+</form>
+</div>
+
+
+<div id="settings" class="section">
+<h3>Account Settings</h3>
+<form id="passwordForm">
+<label>New Password</label>
+<input name="password" type="password" />
+
+
+<label>Confirm Password</label>
+<input name="confirm" type="password" />
+
+
+<button type="submit">Update Password</button>
+</form>
+
+
+<button id="deleteBtn" class="danger">Delete Account</button>
+</div>
+</div>
+
+
+<script src="/static/profile.js"></script>
 
 {%  endblock %}

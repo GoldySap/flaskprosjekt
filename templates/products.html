@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{%  endblock %}
+
 {% block content %}
 
     <h1>Product Page</h1>
@@ -7,8 +11,8 @@
     <div class="product-container">
         {% for p in products %}
         <div class="product">
-            <h2>{{ p.name }}</h2>
-            <p>Price: ${{ p.price }}</p>
+            <h2>{{ p.productname }}</h2>
+            <p>Price: ${{ p.cost }}</p>
 
             <form action="/add" method="POST">
                 <input type="hidden" name="product_id" value="{{ p.id }}">

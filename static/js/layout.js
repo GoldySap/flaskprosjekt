@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("header button").forEach(btn => {
         btn.addEventListener("click", function () {
-            document.querySelector(".menu").classList.toggle("hidden", true);
+            menu = document.getElementById("menu")
+            if (menu.style.display == "none") menu.style.display = "flex";
+            if (menu.style.display == "flex") menu.style.display = "none";
         });
     });
 
