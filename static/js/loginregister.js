@@ -1,19 +1,30 @@
-const retypeT = document.getElementById("retypetitle");
-const retypeI = document.getElementById("retypeinput");
-const p = document.querySelector("#loginregister p");
-const span = document.querySelector("#loginregister p span");
+const form = document.forms["loginregister"];
+const retype = document.getElementById("retyping");
+const btn = document.querySelector("#loginregister button");
+const p = document.querySelector("#loginregister .p");
+const span = document.querySelector("#loginregister .p span");
 
-span.addEventListener("click", function () {
-    if (span.textContent == "Sign Up") {
-        span.textContent = "Login"
-        p.textContent = "Don't have an account? "
-        if (retypeI.style.display == "none") menu.style.display = "flex";
-        if (retypeT.style.display == "none") menu.style.display = "flex";
+function lr(isLogin) {
+    if (isLogin) {
+        btn.textContent = "Login In";
+        p.innerHTML = `Don't have an account? <span class="span">Sign Up</span>`;
+        retype.style.display = "none";
+        form.action = "/login";
+    } else {
+        btn.textContent = "Sign Up";
+        p.innerHTML = `Already have an account? <span class="span">Login</span>`;
+        retype.style.display = "flex";
+        form.action = "/registrer";
     }
-    if (span.textContent == "Login") {
-        span.textContent = "Sign Up";
-        p.textContent = "Already have an account? "
-        if (retypeI.style.display == "flex") menu.style.display = "none";
-        if (retypeT.style.display == "flex") menu.style.display = "none";
-    }
-});
+}
+
+function attachSpanListener() {
+    const span = document.querySelector("#loginregister p span");
+    span.addEventListener("click", () => {
+        const isLogin = span.textContent === "Login";
+        lr(isLogin);
+        attachSpanListener();
+    });
+}
+
+attachSpanListener();

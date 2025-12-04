@@ -64,7 +64,7 @@
                     </div>
                 {% else %}
                     <button>Profile</button>
-                    <div class="menu">
+                    <div id="menu">
                         <ul class="list">
                             <li class="element" id="profile">
                                 <svg
@@ -118,9 +118,10 @@
         {% block content %}{%  endblock %}
     </main>
     <footer>
-        Av Alexander Skjerve Isaksen
+        Av Alexander
     </footer>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
+{% block js %}{%  endblock %}
 </html>

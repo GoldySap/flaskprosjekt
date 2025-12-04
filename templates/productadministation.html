@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/administration.css') }}">
+{%  endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+          <th>ID</th>
+          <th>Companyname</th>
+          <th>Productname</th>
+          <th>cost</th>
+          <th>catagory</th>
+          <th>Description</th>
+          <th>Image num</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+          <form action="/productadministration/update" method="post" class="edit-form">
+            <td>{{ product.id }}
+            <input type="hidden" name="id" value="{{ product.id }}"></td>
+            <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.name }}</td>
+            <input type="hidden" name="name" value="{{ product.name }}">
+            <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.email }}</td>
+            <input type="hidden" name="email" value="{{ product.email }}">
+            <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.password }}</td>
+            <input type="hidden" name="password" value="{{ product.password }}">
+            <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.role }}</td>
+            <input type="hidden" name="role" value="{{ product.role }}">
+            <td>
+            <button type="submit">Save</button>
+          </form>
+          <form action="/delete" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="{{ user.id }}">
+            <button type="submit">X</button>
+          </form>
+            </td>
+        </tr>
+        {% endfor %}
+      </table>
+{%  endblock %}

@@ -1,6 +1,6 @@
 table { 
     /* border-collapse: collapse;  */
-    color: black;
+    color: var(--text);
     width: 60%; 
     border-radius: 10px;
     border: solid black;

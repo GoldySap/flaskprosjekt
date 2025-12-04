@@ -10,6 +10,8 @@
 
     <div class="product-container">
         {% for p in products %}
+
+
         <div class="product">
             <h2>{{ p.productname }}</h2>
             <p>Price: ${{ p.cost }}</p>
@@ -22,7 +24,5 @@
         </div>
         {% endfor %}
     </div>
-
-    <a class="cart-link" href="/cart">Go to Cart</a>
 
 {%  endblock %}

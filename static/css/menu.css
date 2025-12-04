@@ -1,6 +1,7 @@
 header button { 
     background-color: #c33; 
-    color: white; border: none; 
+    color: white; 
+    border: none; 
     padding: 4px 8px; 
     cursor: pointer; 
     border-radius: 5px;

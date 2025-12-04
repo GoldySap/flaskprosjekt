@@ -3,7 +3,7 @@
     --main: #c33;
     --shadow: rgb(0, 169, 118);
     --dark: rgb(104, 20, 20);
-    --text: rgb(76, 76, 76);
+    --text: rgb(61, 61, 61);
     --textweight: 600;
     --textweight_light: 500;
     --textweight_lighter: 400;
@@ -41,7 +41,6 @@ header {
 }
 
 header a {
-    background-color: white;
     text-decoration: none;
     color: var(--text);
     padding: 1vw 2vw 1vw 2vw;
@@ -72,8 +71,4 @@ footer {
     width: 100%;
     height: 10vh;
     color: var(--text);
-}
-
-.hidden {
-    display: none;
 }

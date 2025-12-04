@@ -5,9 +5,15 @@
 }
 
 .product {
-    border: 1px solid #ccc;
+    color: var(--text);
+    background-color: #ffffff;
+    border-radius: 10px;
     padding: 16px;
     width: 200px;
+}
+.cart {
+  background-color: white;
+  color: black;
 }
 
 /* table {
@@ -19,8 +25,3 @@
     border: 1px solid #ccc;
     padding: 8px;
 } */
-
-.cart-link {
-    margin-top: 20px;
-    display: inline-block;
-}
