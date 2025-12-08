@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("header button").forEach(btn => {
+    document.querySelectorAll("headerbuttons button").forEach(btn => {
         btn.addEventListener("click", () => {
             menu = document.getElementById("menu")
             if (menu.style.display == "none") menu.style.display = "flex";

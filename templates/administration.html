@@ -1,90 +1,99 @@
 {% extends "layout.html" %}
 
 {% block styles %}
-    {% if x == "useradministration" %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/useradministration.css') }}">
-    {% else if x == "productadministration" %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/administration.css') }}">
-    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/administration.css') }}">
 {%  endblock %}
 
 {% block content %}
-    {% if x == "useradministration" %}
-        <table>
-            <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Address</th>
-            <th>Role</th>
-            <th>Action</th>
-            </tr>
-            {% for result in results %}
-            <tr>
-            <form action="/useradministration/update" method="post" class="edit-form">
-                <td>{{ result.id }}
-                <input type="hidden" name="id" value="{{ result.id }}"></td>
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.name }}</td>
-                <input type="hidden" name="name" value="{{ result.name }}">
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.email }}</td>
-                <input type="hidden" name="email" value="{{ result.email }}">
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.password }}</td>
-                <input type="hidden" name="password" value="{{ result.password }}" disabled>
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.role }}</td>
-                <input type="hidden" name="role" value="{{ result.role }}">
-                <td>
-                <button type="submit">Save</button>
-            </form>
-            <form action="/delete" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="{{ user.id }}">
-                <button type="submit">X</button>
-            </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% else if x == "productadministration" %}
-        <table>
-            <tr>
-            <th>ID</th>
-            <th>Companyname</th>
-            <th>Productname</th>
-            <th>cost</th>
-            <th>catagory</th>
-            <th>Description</th>
-            <th>Image num</th>
-            </tr>
-            {% for product in products %}
-            <tr>
-            <form action="/productadministration/update" method="post" class="edit-form">
-                <td>{{ product.id }}
-                <input type="hidden" name="id" value="{{ product.id }}"></td>
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.name }}</td>
-                <input type="hidden" name="name" value="{{ product.name }}">
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.email }}</td>
-                <input type="hidden" name="email" value="{{ product.email }}">
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.password }}</td>
-                <input type="hidden" name="password" value="{{ product.password }}">
-                <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.role }}</td>
-                <input type="hidden" name="role" value="{{ product.role }}">
-                <td>
-                <button type="submit">Save</button>
-            </form>
-            <form action="/delete" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="{{ user.id }}">
-                <button type="submit">X</button>
-            </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+    <div class="container">
+        <h2>User Profile</h2>
+
+        <div class="tabs">
+            <div class="tab active" data-target="Useradministration">Useradministration</div>
+            <div class="tab" data-target="Productadministration">Productadministration</div>
+        </div>
+
+
+        <div id="Useradministration" class="section active">
+            <h3>Personal Information</h3>
+            <table>
+                <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Address</th>
+                <th>Role</th>
+                <th>Action</th>
+                </tr>
+                {% for result in results %}
+                <tr>
+                <form action="/useradministration/update" method="post" class="edit-form">
+                    <td>{{ result.id }} <input type="hidden" name="id" value="{{ result.id }}"></td>
+
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.name }}</td>
+                    <input type="hidden" name="name" value="{{ result.name }}">
+
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.email }}</td>
+                    <input type="hidden" name="email" value="{{ result.email }}">
+
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.password }}</td>
+                    <input type="hidden" name="password" value="{{ result.password }}" disabled>
+
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.role }}</td>
+                    <input type="hidden" name="role" value="{{ result.role }}">
+
+                    <button type="submit">Save</button>
+                </form>
+                <form action="/delete" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="{{ user.id }}">
+                    <button type="submit">X</button>
+                </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="Productadministration" class="section">
+            <table>
+                <tr>
+                <th>ID</th>
+                <th>Companyname</th>
+                <th>Productname</th>
+                <th>cost</th>
+                <th>catagory</th>
+                <th>Description</th>
+                <th>Image num</th>
+                </tr>
+                {% for product in products %}
+                <tr>
+                <form action="/productadministration/update" method="post" class="edit-form">
+                    <td>{{ product.id }}
+                    <input type="hidden" name="id" value="{{ product.id }}"></td>
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.name }}</td>
+                    <input type="hidden" name="name" value="{{ product.name }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.email }}</td>
+                    <input type="hidden" name="email" value="{{ product.email }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.password }}</td>
+                    <input type="hidden" name="password" value="{{ product.password }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ product.role }}</td>
+                    <input type="hidden" name="role" value="{{ product.role }}">
+                    <td>
+                    <button type="submit">Save</button>
+                </form>
+                <form action="/delete" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="{{ user.id }}">
+                    <button type="submit">X</button>
+                </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>      
 {%  endblock %}
+
 {% block js %}
-    {% if x == "useradministration" %}
-        <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
-    {% else if x == "productadministration" %}
-        <script src="{{ url_for('static', filename='js/layout.js') }}"></script>
-    {% endif %}
+    <script src="{{ url_for('static', filename='js/administration.js') }}"></script>
 {%  endblock %}

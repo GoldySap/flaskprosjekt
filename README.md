@@ -101,7 +101,7 @@ projectnavn /
   ├── templates/
   │    ├──index.html
   │    ├──layout.html
-  │    ├──profilepage.html
+  │    ├──profile.html
   │    ├──products.html
   │    └──useradministration.html
   ├── .env

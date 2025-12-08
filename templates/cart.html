@@ -2,37 +2,56 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
-{%  endblock %}
+{% endblock %}
 
 {% block content %}
+    <div class="cart-container">
 
-    <h1>Your Shopping Cart</h1>
-    
-    {% if cart|length == 0 %}
-    
-        <p>Your cart is empty.</p>
-    
-    {% else %}
-        
-        <table class="cart">
-            <tr>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-            {% for item in cart %}
+        <h1>Your Shopping Cart</h1>
+
+        {% if cart|length == 0 %}
+            <p class="empty">Your cart is empty.</p>
+
+        {% else %}
+
+            <table id="cart">
                 <tr>
-                    <td>{{ item.name }}</td>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+
+                {% for item in cart %}
+                <tr>
+                    <td>
+                        <div class="cart-product">
+                            {% if item.image %}
+                                <img class="cart-img" src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="Product Image">
+                            {% else %}
+                                <img class="cart-img" src="{{ url_for('static', filename='images/placeholder.png') }}">
+                            {% endif %}
+                            {{ item.name }}
+                        </div>
+                    </td>
+
                     <td>{{ item.qty }}</td>
                     <td>${{ item.price }}</td>
                     <td>${{ item.subtotal }}</td>
-                    <td><a href="/cart/remove/{{ item.id }}">Remove</a></td>
+
+                    <td>
+                        <a class="remove-btn" href="/cart/remove/{{ item.id }}">Remove</a>
+                    </td>
                 </tr>
-            {% endfor %}
-        </table>
-        <h3>Total: ${{ total }}</h3>
-    
-    {% endif %}
-{%  endblock %}
+                {% endfor %}
+            </table>
+
+            <div class="total-box">Total: ${{ total }}</div>
+
+            <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+
+        {% endif %}
+
+    </div>
+{% endblock %}

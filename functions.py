@@ -1,4 +1,18 @@
+from flask import session
+import mariadb
 from werkzeug.security import generate_password_hash
+import dotenv
+import os
+import secrets
+
+dotenv.load_dotenv()
+
+envhost = os.getenv("DB_HOST")
+envuser = os.getenv("DB_USER")
+envpassword = os.getenv("DB_PASSWORD")
+envdb = os.getenv("DB_NAME")
+envtables = os.getenv("DB_TABLES").split(",")
+envtablecontent = os.getenv("DB_TABLECONTENT").split("|")
 
 def dbcheck(mycursor, db):
     mycursor.execute("SHOW DATABASES;")
@@ -37,8 +51,8 @@ def testinsert(mycursor, mydb, envtables, mariadb):
               ("petter@live.no", generate_password_hash("petterpassword"), 1,"kunde")
             ]
   productval = [
-              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", 1),
-              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", 1)
+              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", "1"),
+              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", "1")
             ]
   try:
       utable = None
@@ -54,3 +68,47 @@ def testinsert(mycursor, mydb, envtables, mariadb):
       tester(mycursor, mydb, ptable, productval)
   except mariadb.Error as e:
       print(f"Error connecting to MariaDB: {e}")
+
+def get_db_connection():
+    return mariadb.connect(
+        host = envhost,
+        user = envuser,
+        password = envpassword,
+        database = envdb
+    )
+
+def productlistings():
+    mydb = get_db_connection()
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products")
+    result = cursor.fetchall()
+    mydb.close()
+    return result
+
+def init_cart():
+    if "cart" not in session:
+        session["cart"] = {}
+
+def add_to_cart(product_id, quantity):
+    init_cart()
+    cart = session["cart"]
+
+    product_id = str(product_id)
+    quantity = int(quantity)
+
+    if product_id in cart:
+        cart[product_id] += quantity
+    else:
+        cart[product_id] = quantity
+
+    session["cart"] = cart
+
+
+def remove_from_cart(product_id):
+    init_cart()
+    cart = session["cart"]
+    cart.pop(str(product_id), None)
+    session["cart"] = cart
+
+def generate_order_number():
+    return secrets.token_hex(8).upper()

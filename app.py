@@ -6,7 +6,8 @@ from flask_limiter.util import get_remote_address
 import dotenv
 import os
 import mariadb
-import functions
+import math
+from functions import dbcheck, tablecheck, testinsert, get_db_connection, productlistings, init_cart, add_to_cart, remove_from_cart, generate_order_number
 
 app = Flask(__name__)
 app.secret_key = os.getenv("KEY")
@@ -32,7 +33,7 @@ try:
     password = envpassword,
     )
     mycursor = mydb.cursor()
-    functions.dbcheck(mycursor, envdb)
+    dbcheck(mycursor, envdb)
     mydb = mariadb.connect(
     host = envhost,
     user = envuser,
@@ -40,18 +41,10 @@ try:
     database = envdb,
     )
     mycursor = mydb.cursor()
-    functions.tablecheck(mycursor, envtables, envtablecontent)
-    functions.testinsert(mycursor, mydb, envtables, mariadb)
+    tablecheck(mycursor, envtables, envtablecontent)
+    testinsert(mycursor, mydb, envtables, mariadb)
 except mariadb.Error as e:
     print(f"Error connecting to MariaDB: {e}")
-
-def get_db_connection():
-    return mariadb.connect(
-        host = envhost,
-        user = envuser,
-        password = envpassword,
-        database = envdb
-    )
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -194,39 +187,6 @@ def delete(admin):
         mydb.close()
     return redirect('/administration')
 
-def productlistings():
-    mydb = get_db_connection()
-    cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM products")
-    result = cursor.fetchall()
-    mydb.close()
-    return result
-
-def init_cart():
-    if "cart" not in session:
-        session["cart"] = {}
-
-def add_to_cart(product_id, quantity):
-    init_cart()
-    cart = session["cart"]
-
-    product_id = str(product_id)
-    quantity = int(quantity)
-
-    if product_id in cart:
-        cart[product_id] += quantity
-    else:
-        cart[product_id] = quantity
-
-    session["cart"] = cart
-
-
-def remove_from_cart(product_id):
-    init_cart()
-    cart = session["cart"]
-    cart.pop(str(product_id), None)
-    session["cart"] = cart
-
 @app.route("/products")
 def products():
     result = productlistings()
@@ -257,7 +217,7 @@ def cart():
         print("PRODUCTS:", result)
         if product:
             subtotal = product["cost"] * qty
-            total += subtotal
+            total += math.round(subtotal)
             cart_items.append({
                 "name": product["productname"],
                 "price": product["cost"],
@@ -275,13 +235,82 @@ def remove(id):
     remove_from_cart(id)
     return redirect(url_for("cart"))
 
+# @app.route("/checkout")
+# def checkout():
+#     if "user_id" not in session:
+#         return redirect("/login")
+
+#     user_id = session["user_id"]
+
+#     cursor.execute("SELECT * FROM billing WHERE userid=%s AND active=1", (user_id,))
+#     billing = cursor.fetchone()
+
+#     cursor.execute("SELECT * FROM credentials WHERE userid=%s AND active=1", (user_id,))
+#     card = cursor.fetchone()
+
+#     cart = session.get("cart", [])
+
+#     total = sum(item["subtotal"] for item in cart)
+
+#     return render_template("checkout.html", cart=cart, billing=billing, card=card, total=total)
+
+# @app.route("/checkout/complete", methods=["POST"])
+# def checkout_complete():
+#     if "user_id" not in session:
+#         return redirect("/login")
+
+#     user_id = session["user_id"]
+#     cart = session.get("cart", [])
+
+#     if not cart:
+#         return redirect("/cart")
+
+#     # Fetch active billing + card
+#     cursor.execute("SELECT id FROM billing WHERE userid=%s AND active=1", (user_id,))
+#     billing = cursor.fetchone()
+#     cursor.execute("SELECT id FROM credentials WHERE userid=%s AND active=1", (user_id,))
+#     card = cursor.fetchone()
+
+#     if not billing or not card:
+#         return redirect("/checkout")
+
+#     # Create order entries
+#     for item in cart:
+#         cursor.execute("""
+#             INSERT INTO recipt (cost, userid, productid, credentialid, billingid)
+#             VALUES (%s, %s, %s, %s, %s)
+#         """, (item["subtotal"], user_id, item["id"], card["id"], billing["id"]))
+#         db.commit()
+
+#     # Clear cart
+#     session["cart"] = []
+
+#     return render_template("order_complete.html")
+
+
+# @app.route("/order-success/<int:order_id>")
+# def order_success(order_id):
+#     conn = get_db_connection()
+#     cursor = conn.cursor(dictionary=True)
+#     cursor.execute("SELECT * FROM recipt WHERE id = %s", (order_id,))
+#     order = cursor.fetchone()
+#     cursor.execute("""
+#         SELECT oi.*, p.productname FROM order_items oi
+#         JOIN products p ON p.id = oi.product_id
+#         WHERE oi.order_id = %s
+#     """, (order_id,))
+#     items = cursor.fetchall()
+#     cursor.close()
+#     conn.close()
+#     return render_template("order_success.html", order=order, items=items)
+
 @app.route('/profile')
 def profile():
-    return render_template('profilepage.html')
+    return render_template('profile.html')
 
 @app.route('/settings')
 def settings():
-    return render_template('profilepage.html')
+    return render_template('profile.html')
 
 
 @app.route('/routing', methods=['GET', 'POST'])
