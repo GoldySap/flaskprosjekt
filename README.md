@@ -56,7 +56,6 @@ Tabeller:
 | users | active | BOOL | Navn | 
 | users | role | VARCHAR(255) | Adresse |
 
-
 | Tabell | Felt | Datatype | Beskrivelse | 
 |--------|------|----------|-------------| 
 | products | id | INT | Primærnøkkel | 
@@ -83,33 +82,84 @@ Tabeller:
 
 SQL-eksempel:
 
-CREATE TABLE customers (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255),
-  address VARCHAR(255)
+CREATE TABLE users ( \
+  id INT AUTO_INCREMENT PRIMARY KEY, \
+  email VARCHAR(255), \
+  password VARCHAR(255), \
+  active BOOL, \
+  role VARCHAR(255) \
+);
+
+CREATE TABLE products ( \
+  id INT AUTO_INCREMENT PRIMARY KEY, \
+  companyname VARCHAR(255) NOT NULL, \
+  productname VARCHAR(255) NOT NULL, \
+  cost FLOAT NOT NULL, \
+  category VARCHAR(255), \
+  description VARCHAR(255), \
+  image VARCHAR(255) \
+);
+
+CREATE TABLE credentials ( \
+  id INT AUTO_INCREMENT PRIMARY KEY, \
+  cardnumber VARCHAR(255) NOT NULL, \
+  expirationdate VARCHAR(255) NOT NULL, \
+  securitycode INT NOT NULL, \
+  userid INT, \
+  active BOOL, \
+  FOREIGN KEY (userid) REFERENCES users(id) \
+);
+
+CREATE TABLE billing ( \
+  id INT AUTO_INCREMENT PRIMARY KEY, \
+  firstname VARCHAR(255), \
+  lastname VARCHAR(255) NOT NULL, \
+  adressline1 VARCHAR(255), \
+  adressline2 VARCHAR(255), \
+  country VARCHAR(255), \
+  state VARCHAR(255), \
+  city VARCHAR(255), \
+  zip INT, phonenumber INT, \
+  userid INT, active BOOL, \
+  FOREIGN KEY (userid) REFERENCES users(id) \
+);
+
+CREATE TABLE recipt ( \
+  id INT AUTO_INCREMENT PRIMARY KEY, \
+  ordernumber VARCHAR(100) NOT NULL UNIQUE, \
+  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, \
+  cost FLOAT, \
+  userid INT, \
+  productid INT, \
+  credentialid INT, \
+  billingid INT, \
+  FOREIGN KEY (userid) REFERENCES users(id), \
+  FOREIGN KEY (productid) REFERENCES products(id), \
+  FOREIGN KEY (credentialid) REFERENCES credentials(id), \
+  FOREIGN KEY (billingid) REFERENCES billing(id)) \
 );
 
 ## 6. Programstruktur
-projectnavn /
-  ├ static /
-  │    ├──css /
-  │    │  └──useradministration.html
-  │    ├──images /
-  │    └──js /
-  │       ├──layout.js
-  │       └──loginregister.js
-  ├── templates/
-  │    ├──index.html
-  │    ├──layout.html
-  │    ├──profile.html
-  │    ├──products.html
-  │    └──useradministration.html
-  ├── .env
-  ├── .gitingnore
-  ├── app.py
-  ├── functions.py
-  ├── inspiration.py
-  └── README.md
+projectnavn \
+  ├ static \
+  │    ├──css \
+  │    │  └──useradministration.html \
+  │    ├──images \
+  │    └──js \
+  │       ├──layout.js \
+  │       └──loginregister.js \
+  ├── templates \
+  │    ├──index.html \
+  │    ├──layout.html \
+  │    ├──profile.html \
+  │    ├──products.html \
+  │    └──administration.html \
+  ├── .env \
+  ├── .gitingnore \
+  ├── app.py \
+  ├── functions.py \
+  ├── inspiration.py \
+  └── README.md \
 Databasestrøm:
 
 HTML → Flask → MariaDB → Flask → HTML-tabell
@@ -134,7 +184,3 @@ Hva lærte du?\
 Hva fungerte bra?\
 Hva ville du gjort annerledes?\
 Hva var utfordrende?
-
-## 11. Kildeliste
-w3schools\
-flask.palletsprojects.com
