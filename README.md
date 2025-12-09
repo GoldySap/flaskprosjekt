@@ -27,7 +27,7 @@ Operativsystem: Ubuntu
 
 ### Nettverksoppsett:
 Nettverksdiagram:\
-<img width="424" height="384" alt="connection (2)" src="https://github.com/user-attachments/assets/7b22413b-5f69-450a-9000-c9ae560ec87b" />\
+<img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />\
 IP-adresser: 10.200.14.20\
 Porter:\
 Brannmurregler:
