@@ -10,26 +10,43 @@ tabs.forEach(tab => {
     });
 });
 
-infoForm.onsubmit = (e) => {
+function post(url, data) {
+    return fetch(url, {
+        method: "POST",
+        body: data
+    });
+}
+
+infoForm.addEventListener("submit", e => {
     e.preventDefault();
-    alert("Profile information saved!");
-};
+    post("/profile/update", new FormData(infoForm))
+        .then(() => alert("Profile updated!"));
+});
 
-
-billingForm.onsubmit = (e) => {
+bankForm.addEventListener("submit", e => {
     e.preventDefault();
-    alert("Billing info saved!");
-};
+    post("/profile/bank", new FormData(bankForm))
+        .then(() => alert("Bank info saved!"));
+});
 
-
-passwordForm.onsubmit = (e) => {
+billingForm.addEventListener("submit", e => {
     e.preventDefault();
-    alert("Password updated!");
-};
+    post("/profile/billing", new FormData(billingForm))
+        .then(() => alert("Billing info saved!"));
+});
 
+passwordForm.addEventListener("submit", e => {
+    e.preventDefault();
+    post("/profile/password", new FormData(passwordForm))
+        .then(() => alert("Password updated!"));
+});
 
-deleteBtn.onclick = () => {
-    if (confirm("Are you sure you want to delete your account?")) {
-        alert("Account deleted.");
-    }
-};
+deleteBtn.addEventListener("click", () => {
+    if (!confirm("Are you sure?")) return;
+
+    post("/profile/delete", new FormData())
+        .then(() => {
+            alert("Account deleted.");
+            window.location = "/logout";
+        });
+});

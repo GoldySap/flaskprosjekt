@@ -18,7 +18,7 @@
             {% if session.get('email') %}
                 {% if session.get('role') == "admin" %}
                     <button>Admin</button>
-                    <div id="menu">
+                    <div class="menu">
                         <ul class="list">
                             <li class="element" id="useradministration">
                                 <svg
@@ -64,7 +64,7 @@
                     </div>
                 {% else %}
                     <button>Profile</button>
-                    <div id="menu">
+                    <div class="menu">
                         <ul class="list">
                             <li class="element" id="profile">
                                 <svg

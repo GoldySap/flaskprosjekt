@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("headerbuttons button").forEach(btn => {
+    const menu = document.querySelector(".menu");
+    document.querySelectorAll("#headerbuttons button").forEach(btn => {
         btn.addEventListener("click", () => {
-            menu = document.getElementById("menu")
-            if (menu.style.display == "none") menu.style.display = "flex";
-            else if (menu.style.display == "flex") menu.style.display = "none";
+            const display = getComputedStyle(menu).display;
+            menu.style.display = display === "none" ? "flex" : "none";
         });
     });
     document.querySelectorAll("li").forEach(li => {

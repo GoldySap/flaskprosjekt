@@ -1,7 +1,9 @@
-
-.product-container {
-    display: flex;
-    gap: 20px;
+.products {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }
 
 .product {
@@ -12,20 +14,9 @@
     width: 200px;
 }
 
-.cart-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
 #cart {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
@@ -98,4 +89,19 @@
 
 .checkout-btn:hover {
   background: #218838;
+}
+
+.order-success {
+  background-color: white;
+  color: var(--text);
+  border-radius: 20px;
+  padding: 3rem;
+}
+
+.order-success a {
+  background-color: blue;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  padding: 1rem;
 }

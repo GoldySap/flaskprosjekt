@@ -10,7 +10,8 @@
 
         <div class="tabs">
             <div class="tab active" data-target="info">Profile Info</div>
-            <div class="tab" data-target="billing">Bank & Billing Info</div>
+            <div class="tab" data-target="bank">Bank Info</div>
+            <div class="tab" data-target="billing">Billing Info</div>
             <div class="tab" data-target="settings">Settings</div>
         </div>
 
@@ -29,9 +30,9 @@
                 <button type="submit">Save</button>
             </form>
         </div>
-        <div id="billing" class="section">
-            <h3>Bank & Billing Information</h3>
-            <form id="billingForm">
+        <div id="bank" class="section">
+            <h3>Bank Information</h3>
+            <form id="bankForm">
                 <label>Card Number</label>
                 <input name="card" type="text" />
 
@@ -41,8 +42,38 @@
                 <label>CVV</label>
                 <input name="cvv" type="password" />
 
-                <label>Billing Address</label>
-                <input name="address" type="text" />
+                <button type="submit">Save</button>
+            </form>
+        </div>
+        <div id="billing" class="section">
+            <h3>Billing Information</h3>
+            <form id="billingForm">
+                <label>First Name</label>
+                <input name="firstname" type="text" />
+
+                <label>Last Name</label>
+                <input name="lastname" type="text" />
+                
+                <label>Addressline 1</label>
+                <input name="adressline1" type="text" />
+                
+                <label>Addressline 2</label>
+                <input name="adressline2" type="text" />
+                
+                <label>Country</label>
+                <input name="country" type="text" />
+
+                <label>State</label>
+                <input name="state" type="text" />
+                
+                <label>City</label>
+                <input name="city" type="text" />
+
+                <label>Zip</label>
+                <input name="zip" type="text" />
+                
+                <label>Phonenumber</label>
+                <input name="phonenumber" type="text" />
 
                 <button type="submit">Save</button>
             </form>

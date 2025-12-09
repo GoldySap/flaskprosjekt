@@ -1,11 +1,15 @@
 {% extends "layout.html" %}
 
-{% block content %}
-<div class="order-success">
-    <h1>Thank You!</h1>
-    <p>Your order has been placed successfully.</p>
-    <p>Order ID: <strong>#{{ order_id }}</strong></p>
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{%  endblock %}
 
-    <a class="back-btn" href="/products">Continue Shopping</a>
-</div>
+{% block content %}
+    <div class="order-success">
+        <h1>Thank You!</h1>
+        <p>Your order has been placed successfully.</p>
+        <p>Order ID: <strong>#{{ order_id }}</strong></p>
+
+        <a class="back-btn" href="/products">Continue Shopping</a>
+    </div>
 {% endblock %}

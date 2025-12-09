@@ -1,71 +1,68 @@
 {% extends "layout.html" %}
 
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
-{% endblock %}
-
 {% block content %}
-<h1>Checkout</h1>
 
-{% if cart|length == 0 %}
-    <p>Your cart is empty.</p>
-    <a class="btn" href="/products">Browse Products</a>
+    <div class="checkout_container">
+        <h1>Checkout</h1>
 
-{% else %}
+        {% if cart|length == 0 %}
+            <p>Your cart is empty.</p>
+            <a class="btn" href="/products">Browse Products</a>
 
-    <!-- Saved Billing -->
-    <h2>Billing Information</h2>
-    {% if billing %}
-        <div class="checkout-box">
-            <p>{{ billing.firstname }} {{ billing.lastname }}</p>
-            <p>{{ billing.adressline1 }} {{ billing.adressline2 }}</p>
-            <p>{{ billing.city }}, {{ billing.state }} {{ billing.zip }}</p>
-            <p>{{ billing.country }}</p>
-            <p>Phone: {{ billing.phonenumber }}</p>
-            <a href="/settings/billing" class="edit-link">Edit</a>
-        </div>
-    {% else %}
-        <p>No billing details saved.</p>
-        <a href="/settings/billing" class="btn">Add Billing Info</a>
-        {% set stop_checkout = true %}
-    {% endif %}
+        {% else %}
 
-    <!-- Saved Card -->
-    <h2>Payment Method</h2>
-    {% if card %}
-        <div class="checkout-box">
-            <p>Card ending in **** {{ card.cardnumber[-4:] }}</p>
-            <p>Expires {{ card.expirationdate }}</p>
-            <a href="/settings/card" class="edit-link">Edit</a>
-        </div>
-    {% else %}
-        <p>No card saved.</p>
-        <a href="/settings/card" class="btn">Add Payment Method</a>
-        {% set stop_checkout = true %}
-    {% endif %}
+            <h2>Billing Information</h2>
+            {% if billing %}
+                <div class="checkout-box">
+                    <p>{{ billing.firstname }} {{ billing.lastname }}</p>
+                    <p>{{ billing.adressline1 }} {{ billing.adressline2 }}</p>
+                    <p>{{ billing.city }}, {{ billing.state }} {{ billing.zip }}</p>
+                    <p>{{ billing.country }}</p>
+                    <p>Phone: {{ billing.phonenumber }}</p>
+                    <a href="/profile" class="edit-link">Edit</a>
+                </div>
+            {% else %}
+                <p>No billing details saved.</p>
+                <a href="/profile" class="btn">Add Billing Info</a>
+                {% set stop_checkout = true %}
+            {% endif %}
 
-    <!-- Order Summary -->
-    <h2>Order Summary</h2>
-    <table id="checkout-summary">
-        <tr><th>Product</th><th>Qty</th><th>Subtotal</th></tr>
-        {% for item in cart %}
-        <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.qty }}</td>
-            <td>${{ item.subtotal }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+            <h2>Payment Method</h2>
+            {% if card %}
+                <div class="checkout-box">
+                    <p>Card ending in **** {{ card.cardnumber[-4:] }}</p>
+                    <p>Expires {{ card.expirationdate }}</p>
+                    <a href="/profile" class="edit-link">Edit</a>
+                </div>
+            {% else %}
+                <p>No card saved.</p>
+                <a href="/profile" class="btn">Add Payment Method</a>
+                {% set stop_checkout = true %}
+            {% endif %}
 
-    <h3>Total: ${{ total }}</h3>
+            <h2>Order Summary</h2>
+            <table id="checkout-summary">
+                <tr><th>Product</th><th>Qty</th><th>Subtotal</th></tr>
+                {% for item in cart %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </table>
 
-    {% if not stop_checkout %}
-        <form action="/checkout/complete" method="POST">
-            <button class="btn primary">Place Order</button>
-        </form>
-    {% else %}
-        <p class="warning">You must complete missing information before checking out.</p>
-    {% endif %}
+            <h3>Total: ${{ total }}</h3>
 
-{% endif %}
+            {% if not stop_checkout %}
+                <form action="/checkout/complete" method="POST">
+                    
+                    <button class="btn primary">Place Order</button>
+                </form>
+            {% else %}
+                <p class="warning">You must complete missing information before checking out.</p>
+            {% endif %}
+
+        {% endif %}
+    </div>
 {% endblock %}

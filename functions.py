@@ -1,9 +1,6 @@
 from flask import session
-import mariadb
 from werkzeug.security import generate_password_hash
-import dotenv
-import os
-import secrets
+import mariadb, dotenv, os, secrets, time, random, string
 
 dotenv.load_dotenv()
 
@@ -29,7 +26,7 @@ def tablecheck(mycursor, envtables, envtablecontent):
       if tablename not in temp:
           mycursor.execute(f"CREATE TABLE IF NOT EXISTS {tablename} {con}")
 
-def tester(mycursor, mydb, xtable, val):
+def tester(mycursor, conn, xtable, val):
     mycursor.execute(f"SELECT COUNT(*) FROM {xtable}")
     count = mycursor.fetchone()[0]
     if count == 0:
@@ -42,9 +39,9 @@ def tester(mycursor, mydb, xtable, val):
         colnames = ", ".join(f"`{c}`" for c in dc)
         placeholders = ", ".join(["%s"] * len(dc))
         mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
-        mydb.commit()
+        conn.commit()
 
-def testinsert(mycursor, mydb, envtables, mariadb):
+def testinsert(mycursor, conn, envtables, mariadb):
   userval = [
               ("admin@live.no", generate_password_hash("hemmelig123"), 1, "admin"),
               ("stian@live.no", generate_password_hash("stianpassword"), 1,"kunde"),
@@ -64,8 +61,8 @@ def testinsert(mycursor, mydb, envtables, mariadb):
               ptable = t
       if not utable or not ptable:
           return
-      tester(mycursor, mydb, utable, userval)
-      tester(mycursor, mydb, ptable, productval)
+      tester(mycursor, conn, utable, userval)
+      tester(mycursor, conn, ptable, productval)
   except mariadb.Error as e:
       print(f"Error connecting to MariaDB: {e}")
 
@@ -78,16 +75,17 @@ def get_db_connection():
     )
 
 def productlistings():
-    mydb = get_db_connection()
-    cursor = mydb.cursor(dictionary=True)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM products")
     result = cursor.fetchall()
-    mydb.close()
+    conn.close()
     return result
 
 def init_cart():
-    if "cart" not in session:
+    if "cart" not in session or not isinstance(session["cart"], dict):
         session["cart"] = {}
+
 
 def add_to_cart(product_id, quantity):
     init_cart()
@@ -111,4 +109,8 @@ def remove_from_cart(product_id):
     session["cart"] = cart
 
 def generate_order_number():
-    return secrets.token_hex(8).upper()
+    timestamp = int(time.time())
+    suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    rand = secrets.token_hex(8).upper()
+    order_id = f"{timestamp}-{suffix}-{rand}"
+    return order_id

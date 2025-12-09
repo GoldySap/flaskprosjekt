@@ -6,23 +6,26 @@
 
 {% block content %}
 
-    <h1>Product Page</h1>
-
     <div class="product-container">
-        {% for p in products %}
+
+        <h1>Product Page</h1>
+
+        <div class="products">
+            {% for p in products %}
 
 
-        <div class="product">
-            <h2>{{ p.productname }}</h2>
-            <p>Price: ${{ p.cost }}</p>
+            <div class="product">
+                <h2>{{ p.productname }}</h2>
+                <p>Price: ${{ p.cost }}</p>
 
-            <form action="/add" method="POST">
-                <input type="hidden" name="product_id" value="{{ p.id }}">
-                <input type="number" name="quantity" min="1" value="1">
-                <button type="submit">Add to Cart</button>
-            </form>
+                <form action="/add" method="POST">
+                    <input type="hidden" name="product_id" value="{{ p.id }}">
+                    <input type="number" name="quantity" min="1" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 
 {%  endblock %}
