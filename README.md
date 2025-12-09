@@ -1,37 +1,38 @@
 # Flask-prosjekt -- Dokumentasjon
 ## 1. Forside
-Prosjekttittel: Nettbutikk \
+### Prosjekttittel: Nettbutikk
 Navn: Alexander \
 Klasse: 2IMI \
-Dato: 11.112025
+Dato: 11.11.2025
 
-Kort beskrivelse av prosjektet: \
+### Kort beskrivelse av prosjektet:
 Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
 
 ## 2. Systembeskrivelse
-Formål med applikasjonen: \
-Buttiken skal ha en product katalog, man skal kunne lage en konto, lege producter i din handlevågn, så skal en kvitering lages av kjøpet og loges under kjøp historikk.
+### Formål med applikasjonen:
+Applikasjonen skal være en nettbutikk som inneholder en product katalog, en login og registrering for kontoer, en handlekurv for valgte producter, en kvitering av kjøp som kjøpe historikk, og bruker instilinger.
 
-Brukerflyt: \
-Brukeren starter på hjemmesiden som velkommer dem og viser et lite utvalg av dagens varer, så via navbaren skal de kunne navigere til andre deler av siden som for eksempel en produkt katalog og lage en konto for å lege til informasjonen derer og skape en kjøpe historikk.
+### Brukerflyt:
+Brukeren starter på hjemmesiden der de kan bruke navbaren til å gå til de forskjellige sidene, som å logge inn, profil siden deres, gå til product katalogen, gå til deres handlekurv og retunere tilbake til hjemmesiden.
 
-Teknologier brukt: \
+### Teknologier brukt:
 Python / Flask\
 MariaDB\
-HTML / CSS / JS\
-(valgfritt) Docker / Nginx / Gunicorn / Waitress osv.
+HTML / CSS / JS / JQuery\
 
 ## 3. Server-, infrastruktur- og nettverksoppsett
-Servermiljø
-F.eks.: Ubuntu VM, Docker, fysisk server.
+### Servermiljø
+Server: Rasberry PI 
+Operativsystem: Ubuntu
 
-Nettverksoppsett
-Nettverksdiagram
-IP-adresser\
-Porter\
-Brannmurregler
+### Nettverksoppsett:
+Nettverksdiagram:\
+<img width="424" height="384" alt="Connection" src="https://github.com/user-attachments/assets/3ce7b56c-0f23-4ead-8530-7f98ecc5a625" />\
+IP-adresser: 10.200.14.20\
+Porter:\
+Brannmurregler:
+
 Eksempel:
-
 Klient → Waitress → MariaDB
 Tjenestekonfigurasjon
 systemctl / Supervisor\
