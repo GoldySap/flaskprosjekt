@@ -27,13 +27,13 @@ Operativsystem: Ubuntu
 
 ### Nettverksoppsett:
 Nettverksdiagram:\
-<img width="424" height="384" alt="Connection" src="https://github.com/user-attachments/assets/3ce7b56c-0f23-4ead-8530-7f98ecc5a625" />\
+<img width="424" height="384" alt="connection (2)" src="https://github.com/user-attachments/assets/7b22413b-5f69-450a-9000-c9ae560ec87b" />\
 IP-adresser: 10.200.14.20\
 Porter:\
 Brannmurregler:
 
 Eksempel:
-Klient → Waitress → MariaDB
+Klient → MariaDB
 Tjenestekonfigurasjon
 systemctl / Supervisor\
 Filrettigheter\
@@ -43,7 +43,8 @@ Miljøvariabler
 To Do / In Progress / Done\
 Issues\
 Skjermbilde (valgfritt)
-Refleksjon: Hvordan hjalp Kanban arbeidet?
+Refleksjon: Hvordan hjalp Kanban arbeidet?:
+Kanban har gjort det enkelt å planlege og holde styr å det som skal gjøres, er i progression eller ferdig.
 
 ## 5. Databasebeskrivelse
 Databasenavn:nettbutikk
@@ -144,14 +145,26 @@ CREATE TABLE recipt ( \
 projectnavn \
   ├ static \
   │    ├──css \
-  │    │  └──useradministration.html \
+  │    │  ├──style.js \
+  │    │  ├──profile.js \
+  │    │  ├──loginregister.js \
+  │    │  ├──products.js \
+  │    │  ├──menu.js \
+  │    │  └──administration.html \
   │    ├──images \
   │    └──js \
   │       ├──layout.js \
+  │       ├──profile.js \
+  │       ├──administration.js \
   │       └──loginregister.js \
   ├── templates \
   │    ├──index.html \
   │    ├──layout.html \
+  │    ├──profile.html \
+  │    ├──products.html \
+  │    ├──checkout.html \
+  │    ├──ordersuccess.html \
+  │    ├──login.html \
   │    ├──profile.html \
   │    ├──products.html \
   │    └──administration.html \
@@ -162,26 +175,27 @@ projectnavn \
   ├── inspiration.py \
   └── README.md \
 Databasestrøm:
-
-HTML → Flask → MariaDB → Flask → HTML-tabell
+HTML → Flask → MariaDB → Flask → HTML-tabell\
+eller\
+HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 
 ## 7. Kodeforklaring
 Forklar ruter og funksjoner (kort).
 
 ## 8. Sikkerhet og pålitelighet
-.env \
-Miljøvariabler \
-Parameteriserte spørringer \
-Validering \
-Feilhåndtering
+.env: Ja \
+Miljøvariabler: ja \
+Parameteriserte spørringer: ja\
+Validering: Ja \
+Feilhåndtering: delvis
 
 ## 9. Feilsøking og testing
-Typiske feil\
-Hvordan du løste dem\
-Testmetoder
+Typiske feil:\
+Hvordan du løste dem:\
+Testmetoder:
 
 ## 10. Konklusjon og refleksjon
-Hva lærte du?\
-Hva fungerte bra?\
-Hva ville du gjort annerledes?\
-Hva var utfordrende?
+Hva lærte du?:\
+Hva fungerte bra?:\
+Hva ville du gjort annerledes?:\
+Hva var utfordrende?:
