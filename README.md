@@ -42,7 +42,7 @@ Brukeren starter på hjemmesiden. Via navigasjonsmenyen kan brukeren:
 ### Nettverksoppsett:
 
 Nettverksdiagram:\
-<img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />\
+<img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />
 
 * **IP-adresse:** 10.200.14.20
 * **Porter:** 80 (HTTP)
@@ -62,8 +62,6 @@ Prosjektet benyttet GitHub Projects med Kanban-tavle:
 * **To Do**
 * **In Progress**
 * **Done**
-
-Skjermbilde (valgfritt)
 
 ### Refleksjon
 Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
