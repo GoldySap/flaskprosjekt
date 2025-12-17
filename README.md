@@ -49,6 +49,8 @@ Kanban har gjort det enkelt å planlege og holde styr å det som skal gjøres, e
 ## 5. Databasebeskrivelse
 Databasenavn:nettbutikk
 
+<img width="878" height="603" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
+
 Tabeller:
 | Tabell | Felt | Datatype | Beskrivelse | 
 |--------|------|----------|-------------| 
