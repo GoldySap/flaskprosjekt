@@ -196,7 +196,7 @@ def products():
     return render_template("products.html", products=result)
 
 
-@app.route("/add", methods=["POST"])
+@app.post("/add")
 def add():
     product_id = request.form.get("product_id")
     quantity = request.form.get("quantity", 1)
@@ -217,7 +217,6 @@ def cart():
             if str(p["id"]) == pid:
                 product = p
                 break
-        print("PRODUCTS:", result)
         if product:
             subtotal = round(product["cost"] * qty, 2)
             total += subtotal
@@ -286,7 +285,7 @@ def checkout():
     )
 
 
-@app.route("/checkout/complete", methods=["POST"])
+@app.post("/checkout/complete")
 def checkout_complete():
     user_id = session.get("id")
     cart = session.get("cart", {})
@@ -361,7 +360,7 @@ def order_success(order_id):
 
     cursor.close()
     conn.close()
-    return render_template("order_success.html", order=order, items=items)
+    return render_template("ordersuccess.html", order=order, items=items)
 
 @app.get("/profile")
 def profile():
@@ -389,15 +388,12 @@ def profile():
 @app.post("/profile/bank")
 def profile_bank():
     user_id = session.get("id")
-    card = generate_password_hash(request.form["card"])
-    exp = generate_password_hash(request.form["exp"])
-    cvv = generate_password_hash(request.form["cvv"])
+    card = generate_password_hash(request.form.get("card"))
+    exp = generate_password_hash(request.form.get("exp"))
+    cvv = generate_password_hash(request.form.get("cvv"))
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
-    session.get("id")
-
     cursor.execute("""
         INSERT INTO credentials (cardnumber, expirationdate, securitycode, userid, active)
         VALUES (%s, %s, %s, %s, 1)
@@ -414,8 +410,8 @@ def update_billing():
 
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
-    line1 = request.form.get("addressline1")
-    line2 = request.form.get("addressline2")
+    line1 = request.form.get("adressline1")
+    line2 = request.form.get("adressline2")
     country = request.form.get("country")
     state = request.form.get("state")
     city = request.form.get("city")
@@ -424,9 +420,7 @@ def update_billing():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute("UPDATE billing SET active=0 WHERE userid=%s", (user_id,))
-
     cursor.execute("""
         INSERT INTO billing (
             firstname, lastname, adressline1, adressline2,
