@@ -7,30 +7,46 @@ Dato: 11.11.2025
 
 ### Kort beskrivelse av prosjektet:
 Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
+Prosjektet går ut på å utvikle en nettbutikk ved hjelp av Flask og MariaDB. Applikasjonen benytter flere tabeller i databasen for å håndtere brukere, produkter, kjøp og betalingsinformasjon.
 
 ## 2. Systembeskrivelse
 ### Formål med applikasjonen:
-Applikasjonen skal være en nettbutikk som inneholder en product katalog, en login og registrering for kontoer, en handlekurv for valgte producter, en kvitering av kjøp som kjøpe historikk, og bruker instilinger.
+Formålet med applikasjonen er å tilby en fungerende nettbutikk med følgende funksjonalitet:
+
+* Produktkatalog
+* Innlogging og registrering av brukere
+* Handlekurv for valgte produkter
+* Kvittering og kjøpshistorikk
+* Brukerinnstillinger og profilsider
 
 ### Brukerflyt:
-Brukeren starter på hjemmesiden der de kan bruke navbaren til å gå til de forskjellige sidene, som å logge inn, profil siden deres, gå til product katalogen, gå til deres handlekurv og retunere tilbake til hjemmesiden.
+Brukeren starter på hjemmesiden. Via navigasjonsmenyen kan brukeren:
+
+* Logge inn eller registrere seg
+* Se og redigere profilsiden sin
+* Bla gjennom produktkatalogen
+* Legge produkter i handlekurven
+* Fullføre kjøp og se ordrebekreftelse
+* Returnere til hjemmesiden når som helst
 
 ### Teknologier brukt:
-Python / Flask\
-MariaDB\
-HTML / CSS / JS / JQuery\
+* **Backend:** Python / Flask
+* **Database:** MariaDB
+* **Frontend:** HTML, CSS, JavaScript, jQuery
 
 ## 3. Server-, infrastruktur- og nettverksoppsett
 ### Servermiljø
-Server: Rasberry PI 
-Operativsystem: Ubuntu
+* **Server:** Raspberry Pi
+* **Operativsystem:** Ubuntu Server
 
 ### Nettverksoppsett:
+
 Nettverksdiagram:\
 <img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />\
-IP-adresser: 10.200.14.20\
-Porter:\
-Brannmurregler:
+
+* **IP-adresse:** 10.200.14.20
+* **Porter:** 80 (HTTP)
+* **Brannmur:** Kun nødvendige porter åpne
 
 Eksempel:
 Klient → MariaDB
@@ -40,49 +56,91 @@ Filrettigheter\
 Miljøvariabler
 
 ## 4. Prosjektstyring -- GitHub Projects (Kanban)
-To Do / In Progress / Done\
-Issues\
+
+Prosjektet benyttet GitHub Projects med Kanban-tavle:
+
+* **To Do**
+* **In Progress**
+* **Done**
+
 Skjermbilde (valgfritt)
-Refleksjon: Hvordan hjalp Kanban arbeidet?:
-Kanban har gjort det enkelt å planlege og holde styr å det som skal gjøres, er i progression eller ferdig.
+
+### Refleksjon
+Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
 
 ## 5. Databasebeskrivelse
-Databasenavn:nettbutikk
 
-<img width="878" height="603" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
+**Databasenavn:** nettbutikk
 
-Tabeller:
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| users | id | INT | Primærnøkkel | 
-| users | email | VARCHAR(255) | Navn | 
-| users | password | VARCHAR(255) | Adresse |
-| users | active | BOOL | Navn | 
-| users | role | VARCHAR(255) | Adresse |
+**Diagram:** \
+<img width="439" height="301" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| products | id | INT | Primærnøkkel | 
-| products | name | VARCHAR(255) | Navn | 
-| products | address | VARCHAR(255) | Adresse |
+### Tabeller
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| credentials | id | INT | Primærnøkkel | 
-| credentials | name | VARCHAR(255) | Navn | 
-| credentials | address | VARCHAR(255) | Adresse |
+#### users
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| billing | id | INT | Primærnøkkel | 
-| billing | name | VARCHAR(255) | Navn | 
-| billing | address | VARCHAR(255) | Adresse |
+| Tabell | Felt     | Datatype     | Beskrivelse          |
+| -------| -------- | ------------ | -------------------- |
+| users  | id       | INT          | Primærnøkkel         |
+| users  | email    | VARCHAR(255) | Brukerens e-post     |
+| users  | password | VARCHAR(255) | Hashet passord       |
+| users  | active   | BOOL         | Aktiv/inaktiv bruker |
+| users  | role     | VARCHAR(255) | Brukerrolle          |
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| recipt | id | INT | Primærnøkkel | 
-| recipt | name | VARCHAR(255) | Navn | 
-| recipt | address | VARCHAR(255) | Adresse |
+#### products
+
+| Tabell   | Felt        | Datatype     | Beskrivelse  |
+| -------- | ----------- | ------------ | ------------ |
+| products | id          | INT          | Primærnøkkel |
+| products | companyname | VARCHAR(255) | Leverandør   |
+| products | productname | VARCHAR(255) | Produktnavn  |
+| products | cost        | FLOAT        | Pris         |
+| products | category    | VARCHAR(255) | Kategori     |
+| products | description | VARCHAR(255) | Beskrivelse  |
+| products | image       | VARCHAR(255) | Bilde-URL    |
+
+#### credentials
+
+| Tabell      | Felt           | Datatype     | Beskrivelse           |
+| ----------- | -------------- | ------------ | --------------------- |
+| credentials | id             | INT          | Primærnøkkel          |
+| credentials | cardnumber     | VARCHAR(255) | Kortnummer            |
+| credentials | expirationdate | VARCHAR(255) | Utløpsdato            |
+| credentials | securitycode   | INT          | Sikkerhetskode        |
+| credentials | userid         | INT          | Referanse til bruker  |
+| credentials | active         | BOOL         | Aktiv betalingsmetode |
+
+#### billing
+
+| Tabell  | Felt        | Datatype     | Beskrivelse          |
+| ------- | ----------- | ------------ | -------------------- |
+| billing | id          | INT          | Primærnøkkel         |
+| billing | firstname   | VARCHAR(255) | Fornavn              |
+| billing | lastname    | VARCHAR(255) | Etternavn            |
+| billing | adressline1 | VARCHAR(255) | Adresse              |
+| billing | adressline2 | VARCHAR(255) | Tilleggsadresse      |
+| billing | country     | VARCHAR(255) | Land                 |
+| billing | state       | VARCHAR(255) | Fylke                |
+| billing | city        | VARCHAR(255) | By                   |
+| billing | zip         | INT          | Postnummer           |
+| billing | phonenumber | INT          | Telefonnummer        |
+| billing | userid      | INT          | Referanse til bruker |
+| billing | active      | BOOL         | Aktiv adresse        |
+
+#### recipt (kvittering)
+
+| Tabell | Felt         | Datatype     | Beskrivelse     |
+| ------ | ------------ | ------------ | --------------- |
+| recipt | id           | INT          | Primærnøkkel    |
+| recipt | ordernumber  | VARCHAR(100) | Ordrenummer     |
+| recipt | time         | TIMESTAMP    | Kjøpstidspunkt  |
+| recipt | cost         | FLOAT        | Totalpris       |
+| recipt | userid       | INT          | Bruker          |
+| recipt | productid    | INT          | Produkt         |
+| recipt | credentialid | INT          | Betalingsmetode |
+| recipt | billingid    | INT          | Fakturaadresse  |
+
+---
 
 SQL-eksempel:
 
@@ -181,20 +239,45 @@ HTML → Flask → MariaDB → Flask → HTML-tabell\
 eller\
 HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 
+---
+
 ## 7. Kodeforklaring
-Forklar ruter og funksjoner (kort).
+Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
+
+* `/login` – håndterer innlogging
+* `/register` – registrering av brukere
+* `/products` – viser produktkatalog
+* `/checkout` – gjennomfører kjøp
+
+---
 
 ## 8. Sikkerhet og pålitelighet
-.env: Ja \
-Miljøvariabler: ja \
-Parameteriserte spørringer: ja\
-Validering: Ja \
-Feilhåndtering: delvis
+
+* `.env` brukt til sensitive verdier
+* Miljøvariabler for databasepålogging
+* Parameteriserte SQL-spørringer
+* Validering av input fra bruker
+* Feilhåndtering med `try/except`, `verdi sammenligning` og regulerte handlinger om hvise krav ikke møtes.
+
+---
 
 ## 9. Feilsøking og testing
-Typiske feil:\
-Hvordan du løste dem:\
-Testmetoder:
+### Typiske feil
+
+* Databaseforbindelse feilet
+* Feil i SQL-spørringer
+* Manglende validering av input
+
+### Løsning
+
+Feil ble løst ved bruk av logging, utskrift i konsoll og testing av SQL-spørringer direkte i databasen.
+
+### Testmetoder
+
+* Manuell testing av alle sider
+* Testing med ulike brukere og roller
+
+---
 
 ## 10. Konklusjon og refleksjon
 Hva lærte du?:\
