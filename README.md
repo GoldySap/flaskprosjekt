@@ -85,7 +85,6 @@ Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fre
 ---
 
 ### Databasestruktur og relasjoner
-
 Databasen er bygget opp for å støtte funksjonaliteten i nettbutikken, med tydelige relasjoner mellom brukere, produkter og kjøp. Strukturen er normalisert for å unngå duplisering av data og for å gjøre systemet mer oversiktlig, sikkert og skalerbart.
 
 #### Overordnet sammenheng
@@ -229,7 +228,7 @@ SQL-eksempel:
 #### users tabell
 ```sql
 CREATE TABLE users ( 
-  id INT AUTO_INCREMENT PRIMARY KEY, 
+  id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255), 
   password VARCHAR(255), 
   active BOOL, 
@@ -537,6 +536,7 @@ def products():
 
 * `/checkout` – gjennomfører kjøp
 ```python
+# Viser aktiv billing og bank info, og valgte produkter og deres total pris
 @app.route("/checkout")
 def checkout():
     # Sjekker om du ikke er logget inn
@@ -546,7 +546,8 @@ def checkout():
     user_id = session.get("id")
 
     products = productlistings()
-
+    
+    # Henter billing og bank info
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -559,6 +560,7 @@ def checkout():
     cursor.close()
     conn.close()
 
+    # Henter handlekurven for å vise produktene, deres individuelle priser og deres total pris til sammen
     cart = session.get("cart", {})
     cart_items = []
     total = 0
@@ -585,16 +587,19 @@ def checkout():
         total=total
     )
 
-
+# Håndterer fullførte kjøp
 @app.post("/checkout/complete")
 def checkout_complete():
+    # Henter relevant info som bruker id, handlekurven deres og produktlisten
     user_id = session.get("id")
     cart = session.get("cart", {})
     products = productlistings()
 
+    # Sjekker om det ikke er en handlekurv tilgjengelig
     if not cart:
         return redirect("/cart")
 
+    # Henter billing og bank info
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -604,9 +609,11 @@ def checkout_complete():
     cursor.execute("SELECT id FROM credentials WHERE userid=%s AND active=1", (user_id,))
     card = cursor.fetchone()
 
+    # Sjekker om det ikke finnes billing og bank info
     if not billing or not card:
         return redirect("/checkout")
     
+    # Lager en lokal variabel for handlekurven (cart_items)
     cart = session.get("cart", {})
     cart_items = []
     total = 0
@@ -625,6 +632,7 @@ def checkout_complete():
                 "image": product["image"]
             })
 
+    # Lager en bestillings id for hele bestillingen, og kvitteringer for vert produkt i handlekurven forbundet med bestillings id-en
     while True:
         for item in cart_items:
             order_id = generate_order_number()
@@ -640,6 +648,7 @@ def checkout_complete():
     cursor.close()
     conn.close()
 
+    # Tømmer handlekurven
     session["cart"] = []
 
     return render_template("ordersuccess.html", order_id=order_id)
@@ -693,7 +702,7 @@ Feil ble løst ved:
 
 ### Hva lærte du?
 
-Jeg lærte hvordan man bygger en fullstack-applikasjon med HTML, CSS, JS, PYTHON Flask og Mariadb database.
+Jeg lærte hvordan man bygger en fullstack-applikasjon med HTML, CSS, JS, PYTHON, Flask og Mariadb database.
 
 ### Hva fungerte bra?
 
@@ -701,8 +710,34 @@ Databasekobling og struktur fungerte stabilt.
 
 ### Hva var utfordrende?
 
-Håndtering av relasjoner mellom tabeller og feilsøking i backend.
+Håndtering av relasjoner mellom tabeller og feilsøking i backend. Rettskriving i form av syntax og stuktur.
 
 ### Hva ville du gjort annerledes?
 
 Jeg ville planlagt databasemodellen enda bedre før koding startet.
+
+## 11. 
+
+### Oppsett og kjøring
+1. Installer avhengigheter
+
+
+2. Opprett `.env`-fil med databaseverdier
+```.env
+DB_HOST=(Server Ipen)
+DB_USER=()
+DB_PASSWORD=(Database Passord)
+DB_NAME=nettbutikk
+DB_TABLES=users, products, credentials, billing, recipt
+DB_TABLECONTENT=(id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), active BOOL, role VARCHAR(255))|(id INT AUTO_INCREMENT PRIMARY KEY, companyname VARCHAR(255) NOT NULL, productname VARCHAR(255) NOT NULL, cost FLOAT NOT NULL, category VARCHAR(255), description VARCHAR(255), image VARCHAR(255))|(id INT AUTO_INCREMENT PRIMARY KEY, cardnumber VARCHAR(255) NOT NULL, expirationdate VARCHAR(255) NOT NULL, securitycode VARCHAR(255) NOT NULL, userid INT, active BOOL, FOREIGN KEY (userid) REFERENCES users(id))|(id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(255), lastname VARCHAR(255) NOT NULL, adressline1 VARCHAR(255), adressline2 VARCHAR(255), country VARCHAR(255), state VARCHAR(255), city VARCHAR(255), zip INT, phonenumber INT, userid INT, active BOOL, FOREIGN KEY (userid) REFERENCES users(id))|(id INT AUTO_INCREMENT PRIMARY KEY, ordernumber VARCHAR(100) NOT NULL UNIQUE, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, cost FLOAT, userid INT, productid INT, credentialid INT, billingid INT, FOREIGN KEY (userid) REFERENCES users(id), FOREIGN KEY (productid) REFERENCES products(id), FOREIGN KEY (credentialid) REFERENCES credentials(id), FOREIGN KEY (billingid) REFERENCES billing(id))
+KEY=(En sikkerhets nøkkel)
+```
+
+3. Start Flask-applikasjonen med `python app.py`
+
+
+### Videre utvikling
+Videre arbeid med prosjektet kunne inkludert:
+- Order- og order_items-tabeller
+- Bedre sikker lagring av betalingsdata
+- Forbedret frontend og responsivt design
