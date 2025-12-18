@@ -94,10 +94,10 @@ Databasen er bygget opp for å støtte funksjonaliteten i nettbutikken, med tyde
   - flere fakturaadresser (`billing`)
   - flere kjøp (`recipt`)
 - Hvert kjøp er knyttet til:
-  - én bruker
+  - en bruker
   - ett produkt
-  - én betalingsmetode
-  - én fakturaadresse
+  - en betalingsmetode
+  - en fakturaadresse
 
 Dette gjør det mulig å lagre full kjøpshistorikk og samtidig holde brukerdata strukturert.
 
