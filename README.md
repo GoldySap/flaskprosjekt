@@ -6,7 +6,6 @@ Klasse: 2IMI \
 Dato: 11.11.2025
 
 ### Kort beskrivelse av prosjektet:
-Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
 Prosjektet går ut på å utvikle en nettbutikk ved hjelp av Flask og MariaDB. Applikasjonen benytter flere tabeller i databasen for å håndtere brukere, produkter, kjøp og betalingsinformasjon.
 
 ---
@@ -53,9 +52,9 @@ Nettverksdiagram:\
 * **Brannmur:** Kun nødvendige porter åpne
 
 Eksempel:
-Klient → MariaDB
-Tjenestekonfigurasjon
-systemctl / Supervisor\
+Klient → Flask-server → MariaDB → Flask → Klient\
+Tjenestekonfigurasjon\
+systemctl\
 Filrettigheter\
 Miljøvariabler
 
@@ -83,8 +82,83 @@ Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fre
 **Diagram:** \
 <img width="439" height="301" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
 
-### Tabeller
+---
 
+### Databasestruktur og relasjoner
+
+Databasen er bygget opp for å støtte funksjonaliteten i nettbutikken, med tydelige relasjoner mellom brukere, produkter og kjøp. Strukturen er normalisert for å unngå duplisering av data og for å gjøre systemet mer oversiktlig, sikkert og skalerbart.
+
+#### Overordnet sammenheng
+- En **bruker** kan ha:
+  - flere betalingsmetoder (`credentials`)
+  - flere fakturaadresser (`billing`)
+  - flere kjøp (`recipt`)
+- Hvert kjøp er knyttet til:
+  - én bruker
+  - ett produkt
+  - én betalingsmetode
+  - én fakturaadresse
+
+Dette gjør det mulig å lagre full kjøpshistorikk og samtidig holde brukerdata strukturert.
+
+---
+
+### Forklaring av tabellene og hvordan de henger sammen
+
+#### users
+`users` er kjernetabellen i databasen. Den inneholder all grunnleggende informasjon om brukere, som e-post, passord, rolle og om kontoen er aktiv.
+
+Primærnøkkelen `id` brukes som fremmednøkkel i flere andre tabeller for å knytte data til riktig bruker.
+
+---
+
+#### products
+`products` inneholder alle produkter som vises i nettbutikken. Hvert produkt har informasjon som navn, pris, kategori, beskrivelse og bilde.
+
+Produkter kobles til kjøp gjennom `recipt`-tabellen, som gjør det mulig å se hvilke produkter en bruker har kjøpt.
+
+---
+
+#### credentials
+`credentials` lagrer betalingsinformasjon for brukere. Tabellen er koblet til `users` via feltet `userid`, som er en fremmednøkkel til `users(id)`.
+
+Dette gjør det mulig for én bruker å ha flere betalingsmetoder, samtidig som betalingsinformasjonen holdes adskilt fra brukerens hovedprofil.
+
+Feltet `active` brukes til å markere hvilken betalingsmetode som er aktiv ved gjennomføring av kjøp.
+
+---
+
+#### billing
+`billing` inneholder faktura- og leveringsadresser. Tabellen er også koblet til `users` via `userid`.
+
+Ved å lagre adresser i en egen tabell kan brukere ha flere adresser, og systemet kan enkelt endre hvilken adresse som er aktiv uten å påvirke tidligere kjøp.
+
+---
+
+#### recipt (kvittering)
+`recipt` representerer gjennomførte kjøp og fungerer som en kobling mellom flere deler av systemet.
+
+Hver kvittering er knyttet til:
+- `userid` → hvilken bruker som har gjennomført kjøpet
+- `productid` → hvilket produkt som er kjøpt
+- `credentialid` → hvilken betalingsmetode som ble brukt
+- `billingid` → hvilken fakturaadresse som ble brukt
+
+Denne strukturen gjør det mulig å vise kjøpshistorikk, generere kvitteringer og dokumentere tidligere ordre selv om bruker senere endrer adresse eller betalingsinformasjon.
+
+---
+
+### Begrunnelse for valg av databasestruktur
+
+Denne databasemodellen er valgt fordi:
+- Den følger prinsipper for relasjonsdatabaser
+- Den reduserer dataduplisering
+- Den gjør systemet enkelt å utvide med flere produkter, adresser og betalingsmetoder
+- Den støtter sikker og strukturert lagring av bruker- og kjøpsdata
+
+---
+
+### Tabeller
 #### users
 
 | Tabell | Felt     | Datatype     | Beskrivelse          |
