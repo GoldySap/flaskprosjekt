@@ -71,7 +71,7 @@ Prosjektet benyttet GitHub Projects med Kanban-tavle:
 * **Done**
 
 ### Refleksjon
-Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
+Kanban gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
 
 ---
 
@@ -716,28 +716,8 @@ Håndtering av relasjoner mellom tabeller og feilsøking i backend. Rettskriving
 
 Jeg ville planlagt databasemodellen enda bedre før koding startet.
 
-## 11. 
-
-### Oppsett og kjøring
-1. Installer avhengigheter
-
-
-2. Opprett `.env`-fil med databaseverdier
-```.env
-DB_HOST=(Server Ipen)
-DB_USER=()
-DB_PASSWORD=(Database Passord)
-DB_NAME=nettbutikk
-DB_TABLES=users, products, credentials, billing, recipt
-DB_TABLECONTENT=(id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), active BOOL, role VARCHAR(255))|(id INT AUTO_INCREMENT PRIMARY KEY, companyname VARCHAR(255) NOT NULL, productname VARCHAR(255) NOT NULL, cost FLOAT NOT NULL, category VARCHAR(255), description VARCHAR(255), image VARCHAR(255))|(id INT AUTO_INCREMENT PRIMARY KEY, cardnumber VARCHAR(255) NOT NULL, expirationdate VARCHAR(255) NOT NULL, securitycode VARCHAR(255) NOT NULL, userid INT, active BOOL, FOREIGN KEY (userid) REFERENCES users(id))|(id INT AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(255), lastname VARCHAR(255) NOT NULL, adressline1 VARCHAR(255), adressline2 VARCHAR(255), country VARCHAR(255), state VARCHAR(255), city VARCHAR(255), zip INT, phonenumber INT, userid INT, active BOOL, FOREIGN KEY (userid) REFERENCES users(id))|(id INT AUTO_INCREMENT PRIMARY KEY, ordernumber VARCHAR(100) NOT NULL UNIQUE, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, cost FLOAT, userid INT, productid INT, credentialid INT, billingid INT, FOREIGN KEY (userid) REFERENCES users(id), FOREIGN KEY (productid) REFERENCES products(id), FOREIGN KEY (credentialid) REFERENCES credentials(id), FOREIGN KEY (billingid) REFERENCES billing(id))
-KEY=(En sikkerhets nøkkel)
-```
-
-3. Start Flask-applikasjonen med `python app.py`
-
-
 ### Videre utvikling
 Videre arbeid med prosjektet kunne inkludert:
-- Order- og order_items-tabeller
-- Bedre sikker lagring av betalingsdata
-- Forbedret frontend og responsivt design
+- Fixing, forbedring og implementering frontend stuktur, funksjonalitet og responsivt design
+- Bedre sikkerhet i form av sikkere lagring av betalingsdata og implementering av csrf tokens
+- Fixing, forbedring og implementering av style, som css og kanskje js
