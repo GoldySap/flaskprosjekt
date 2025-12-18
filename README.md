@@ -9,6 +9,8 @@ Dato: 11.11.2025
 Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
 Prosjektet går ut på å utvikle en nettbutikk ved hjelp av Flask og MariaDB. Applikasjonen benytter flere tabeller i databasen for å håndtere brukere, produkter, kjøp og betalingsinformasjon.
 
+---
+
 ## 2. Systembeskrivelse
 ### Formål med applikasjonen:
 Formålet med applikasjonen er å tilby en fungerende nettbutikk med følgende funksjonalitet:
@@ -34,6 +36,8 @@ Brukeren starter på hjemmesiden. Via navigasjonsmenyen kan brukeren:
 * **Database:** MariaDB
 * **Frontend:** HTML, CSS, JavaScript, jQuery
 
+---
+
 ## 3. Server-, infrastruktur- og nettverksoppsett
 ### Servermiljø
 * **Server:** Raspberry Pi
@@ -55,6 +59,8 @@ systemctl / Supervisor\
 Filrettigheter\
 Miljøvariabler
 
+---
+
 ## 4. Prosjektstyring -- GitHub Projects (Kanban)
 
 Prosjektet benyttet GitHub Projects med Kanban-tavle:
@@ -65,6 +71,8 @@ Prosjektet benyttet GitHub Projects med Kanban-tavle:
 
 ### Refleksjon
 Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
+
+---
 
 ## 5. Databasebeskrivelse
 
@@ -164,7 +172,7 @@ CREATE TABLE credentials ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   cardnumber VARCHAR(255) NOT NULL, \
   expirationdate VARCHAR(255) NOT NULL, \
-  securitycode INT NOT NULL, \
+  securitycode VARCHAR(255) NOT NULL, \
   userid INT, \
   active BOOL, \
   FOREIGN KEY (userid) REFERENCES users(id) \
@@ -243,10 +251,200 @@ HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
 
 * `/login` – håndterer innlogging
-* `/register` – registrering av brukere
-* `/products` – viser produktkatalog
-* `/checkout` – gjennomfører kjøp
+```python
+@app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per 1 minutes")
+def login():
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s AND active=1", (email, ))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if user == None:
+            return render_template("login.html", feil_melding="Account not found")
+        if user and check_password_hash(user['password'], password) and user['active']:
+            session['id'] = user['id']
+            session['email'] = user['email']
+            session['role'] = user['role']
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", feil_melding="Incorrect email or password")
+    return render_template("login.html")
+```
+
+* `/register` – registrering av brukere
+```python
+@app.route("/registrer", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form['email']
+        password_raw = request.form['password']
+        repassword_raw = request.form['retypeinput']
+        password = request.form['password']
+
+        hashed = hashlib.sha256(password.encode()).hexdigest()
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
+        existing = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if existing:
+            return render_template("login.html", feil_melding="Email already in use")
+
+        if password_raw != repassword_raw:
+            return render_template("login.html", feil_melding="Password mismatch")
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (email, password, active, role) VALUES (%s, %s, %s, %s)", (email, hashed, True, 'kunde'))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash("User Registered", "success")
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        session['email'] = user['email']
+        session['role'] = user['role']
+        return redirect(url_for("index"))
+    return render_template("login.html")
+```
+
+* `/products` – viser produktkatalog
+```python
+def productlistings():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products")
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+@app.route("/products")
+def products():
+    result = productlistings()
+    return render_template("products.html", products=result)
+```
+
+* `/checkout` – gjennomfører kjøp
+```python
+@app.route("/checkout")
+def checkout():
+    if "id" not in session:
+        return redirect("/login")
+
+    user_id = session.get("id")
+
+    products = productlistings()
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM billing WHERE userid=%s AND active=1", (user_id,))
+    billing = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM credentials WHERE userid=%s AND active=1", (user_id,))
+    card = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    cart = session.get("cart", {})
+    cart_items = []
+    total = 0
+
+    for pid, qty in cart.items():
+        product = next((p for p in products if str(p["id"]) == str(pid)), None)
+        if product:
+            subtotal = round(product["cost"] * qty, 2)
+            total += subtotal
+            cart_items.append({
+                "id": product["id"],
+                "name": product["productname"],
+                "price": product["cost"],
+                "qty": qty,
+                "subtotal": subtotal,
+                "image": product["image"]
+            })
+
+    return render_template(
+        "checkout.html",
+        cart=cart_items,
+        billing=billing,
+        card=card,
+        total=total
+    )
+
+
+@app.post("/checkout/complete")
+def checkout_complete():
+    user_id = session.get("id")
+    cart = session.get("cart", {})
+    products = productlistings()
+
+    if not cart:
+        return redirect("/cart")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT id FROM billing WHERE userid=%s AND active=1", (user_id,))
+    billing = cursor.fetchone()
+
+    cursor.execute("SELECT id FROM credentials WHERE userid=%s AND active=1", (user_id,))
+    card = cursor.fetchone()
+
+    if not billing or not card:
+        return redirect("/checkout")
+    
+    cart = session.get("cart", {})
+    cart_items = []
+    total = 0
+
+    for pid, qty in cart.items():
+        product = next((p for p in products if str(p["id"]) == str(pid)), None)
+        if product:
+            subtotal = round(product["cost"] * qty, 2)
+            total += subtotal
+            cart_items.append({
+                "id": product["id"],
+                "name": product["productname"],
+                "price": product["cost"],
+                "qty": qty,
+                "subtotal": subtotal,
+                "image": product["image"]
+            })
+
+    while True:
+        for item in cart_items:
+            order_id = generate_order_number()
+            cursor.execute("SELECT 1 FROM recipt WHERE ordernumber=%s", (order_id,))
+            if not cursor.fetchone():
+                cursor.execute("""
+                    INSERT INTO recipt (ordernumber, cost, userid, productid, credentialid, billingid)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (order_id, item["subtotal"], user_id, item["id"], card["id"], billing["id"]))
+                conn.commit()
+        break
+
+    cursor.close()
+    conn.close()
+
+    session["cart"] = []
+
+    return render_template("ordersuccess.html", order_id=order_id)
+```
 ---
 
 ## 8. Sikkerhet og pålitelighet
@@ -265,6 +463,7 @@ Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
 * Databaseforbindelse feilet
 * Feil i SQL-spørringer
 * Manglende validering av input
+* Syntaxs
 
 ### Løsning
 
@@ -278,7 +477,19 @@ Feil ble løst ved bruk av logging, utskrift i konsoll og testing av SQL-spørri
 ---
 
 ## 10. Konklusjon og refleksjon
-Hva lærte du?:\
-Hva fungerte bra?:\
-Hva ville du gjort annerledes?:\
-Hva var utfordrende?:
+
+### Hva lærte du?
+
+Jeg lærte hvordan man bygger en fullstack-applikasjon med HTML, CSS, JS, PYTHON Flask og Mariadb database.
+
+### Hva fungerte bra?
+
+Databasekobling og struktur fungerte stabilt.
+
+### Hva var utfordrende?
+
+Håndtering av relasjoner mellom tabeller og feilsøking i backend.
+
+### Hva ville du gjort annerledes?
+
+Jeg ville planlagt databasemodellen enda bedre før koding startet.
