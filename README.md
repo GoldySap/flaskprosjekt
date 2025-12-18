@@ -89,6 +89,7 @@ Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fre
 Databasen er bygget opp for å støtte funksjonaliteten i nettbutikken, med tydelige relasjoner mellom brukere, produkter og kjøp. Strukturen er normalisert for å unngå duplisering av data og for å gjøre systemet mer oversiktlig, sikkert og skalerbart.
 
 #### Overordnet sammenheng
+Relasjonene mellom tabellene er implementert ved hjelp av fremmednøkler (FOREIGN KEY), som sikrer dataintegritet og forhindrer at kjøp kan eksistere uten gyldig bruker, produkt, betalingsmetode eller adresse.
 - En **bruker** kan ha:
   - flere betalingsmetoder (`credentials`)
   - flere fakturaadresser (`billing`)
@@ -159,7 +160,7 @@ Denne databasemodellen er valgt fordi:
 ---
 
 ### Tabeller
-#### users tabel
+#### users tabell
 
 | Tabell | Felt     | Datatype     | Beskrivelse          |
 | -------| -------- | ------------ | -------------------- |
@@ -169,7 +170,7 @@ Denne databasemodellen er valgt fordi:
 | users  | active   | BOOL         | Aktiv/inaktiv bruker |
 | users  | role     | VARCHAR(255) | Brukerrolle          |
 
-#### products tabel
+#### products tabell
 
 | Tabell   | Felt        | Datatype     | Beskrivelse  |
 | -------- | ----------- | ------------ | ------------ |
@@ -181,7 +182,7 @@ Denne databasemodellen er valgt fordi:
 | products | description | VARCHAR(255) | Beskrivelse  |
 | products | image       | VARCHAR(255) | Bilde-URL    |
 
-#### credentials tabel
+#### credentials tabell
 
 | Tabell      | Felt           | Datatype     | Beskrivelse           |
 | ----------- | -------------- | ------------ | --------------------- |
@@ -209,7 +210,7 @@ Denne databasemodellen er valgt fordi:
 | billing | userid      | INT          | Referanse til bruker |
 | billing | active      | BOOL         | Aktiv adresse        |
 
-#### recipt (kvittering) tabel
+#### recipt (kvittering) tabell
 
 | Tabell | Felt         | Datatype     | Beskrivelse     |
 | ------ | ------------ | ------------ | --------------- |
@@ -225,7 +226,7 @@ Denne databasemodellen er valgt fordi:
 ---
 
 SQL-eksempel:
-#### users tabel
+#### users tabell
 ```sql
 CREATE TABLE users ( 
   id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -236,7 +237,7 @@ CREATE TABLE users (
 );
 ```
 
-#### products tabel
+#### products tabell
 ```sql
 CREATE TABLE products ( 
   id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -245,11 +246,11 @@ CREATE TABLE products (
   cost FLOAT NOT NULL, 
   category VARCHAR(255), 
   description VARCHAR(255), 
-  image VARCHAR(255) \
+  image VARCHAR(255) 
 );
 ```
 
-#### credentials tabel
+#### credentials tabell
 ```sql
 CREATE TABLE credentials ( 
   id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -262,7 +263,7 @@ CREATE TABLE credentials (
 );
 ```
 
-#### billing tabel
+#### billing tabell
 ```sql
 CREATE TABLE billing ( 
   id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -279,7 +280,7 @@ CREATE TABLE billing (
 );
 ```
 
-#### recipt (kvittering) tabel
+#### recipt (kvittering) tabell
 ```sql
 CREATE TABLE recipt ( 
   id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -344,7 +345,7 @@ Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
 
 * `try/except` - håndterer auto oppretelsen av databasen og legger til test kontoer og produkter, hvis de ikke allerede eksisterer.
 ```python
-# Skjekker om databasen eksisterer, og oppretter den hvis ikke
+# Sjekker om databasen eksisterer, og oppretter den hvis ikke
 def dbcheck(mycursor, db):
     mycursor.execute("SHOW DATABASES;")
     temp = [x[0] for x in mycursor]
@@ -352,7 +353,7 @@ def dbcheck(mycursor, db):
       mycursor.execute(f"CREATE DATABASE {db} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
       temp.append(db)
 
-# Skjekker om de nødvendige tabelene i databasen eksisterer, og oppretter dem hvis ikke
+# Sjekker om de nødvendige tabellene i databasen eksisterer, og oppretter dem hvis ikke
 def tablecheck(mycursor, envtables, envtablecontent):
     mycursor.execute("SHOW TABLES;")
     temp = [x[0] for x in mycursor]
@@ -361,7 +362,7 @@ def tablecheck(mycursor, envtables, envtablecontent):
       if tablename not in temp:
           mycursor.execute(f"CREATE TABLE IF NOT EXISTS {tablename} {con}")
 
-# Sender en gitt verdi til den spesifiserte tabelen
+# Sender en gitt verdi til den spesifiserte tabellen
 def tester(mycursor, conn, xtable, val):
     mycursor.execute(f"SELECT COUNT(*) FROM {xtable}")
     count = mycursor.fetchone()[0]
@@ -377,7 +378,7 @@ def tester(mycursor, conn, xtable, val):
         mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
         conn.commit()
 
-# Setter in test kontoene og produktene i de relevante tabelene, hvis de ikke eksisterer
+# Setter in test kontoene og produktene i de relevante tabellene, hvis de ikke eksisterer
 def testinsert(mycursor, conn, envtables, mariadb):
   userval = [
               ("admin@live.no", generate_password_hash("hemmelig123"), 1, "admin"),
@@ -412,7 +413,7 @@ def get_db_connection():
         database = envdb
     )
 
-# Kobler til serveren og skjekker om databasen og alle nødvendige tabeller eksisterer, så legger til test verdier om de ikke eksisterer
+# Kobler til serveren og sjekker om databasen og alle nødvendige tabeller eksisterer, så legger til test verdier om de ikke eksisterer
 try:
     conn = mariadb.connect(
     host = envhost,
@@ -452,7 +453,7 @@ def login():
         cursor.close()
         conn.close()
 
-        # Skjekker om brukeren finnes, og om passordet matcher den samsvarende kontoen og om kontoen er aktive
+        # Sjekker om brukeren finnes, og om passordet matcher den samsvarende kontoen og om kontoen er aktive
         if user == None:
             return render_template("login.html", feil_melding="Account not found")
         if user and check_password_hash(user['password'], password) and user['active']:
@@ -478,18 +479,22 @@ def register():
 
         hashed = hashlib.sha256(password.encode()).hexdigest()
 
+        # Prøver å hente en konto med samme email
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
         existing = cursor.fetchone()
         cursor.close()
         conn.close()
+
+        # Sjekker om kontoen allerede finnes
         if existing:
             return render_template("login.html", feil_melding="Email already in use")
-
+        # Sjekker om brukeren skrev passordet feil på passord og repassord(passordet skrevet for en andre gang som at man ikke lagrer feil passord)
         if password_raw != repassword_raw:
             return render_template("login.html", feil_melding="Password mismatch")
         
+        # Legger til kontoen i bruker tabellen
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("INSERT INTO users (email, password, active, role) VALUES (%s, %s, %s, %s)", (email, hashed, True, 'kunde'))
@@ -498,12 +503,14 @@ def register():
         conn.close()
         flash("User Registered", "success")
 
+        # Setter relevant session info, gjør det samme som login 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
+        session['id'] = user['id']
         session['email'] = user['email']
         session['role'] = user['role']
         return redirect(url_for("index"))
@@ -532,6 +539,7 @@ def products():
 ```python
 @app.route("/checkout")
 def checkout():
+    # Sjekker om du ikke er logget inn
     if "id" not in session:
         return redirect("/login")
 
