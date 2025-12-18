@@ -207,6 +207,8 @@ CREATE TABLE recipt ( \
   FOREIGN KEY (billingid) REFERENCES billing(id)) \
 );
 
+---
+
 ## 6. Programstruktur
 projectnavn \
   ├ static \
@@ -249,6 +251,98 @@ HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 
 ## 7. Kodeforklaring
 Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
+
+* `try/except` - håndterer auto oppretelsen av databasen og legger til test kontoer og produkter, hvis de ikke allerede eksisterer.
+```python
+# Skjekker om databasen eksisterer, og oppretter den hvis ikke
+def dbcheck(mycursor, db):
+    mycursor.execute("SHOW DATABASES;")
+    temp = [x[0] for x in mycursor]
+    if db not in temp:
+      mycursor.execute(f"CREATE DATABASE {db} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+      temp.append(db)
+
+# Skjekker om de nødvendige tabelene i databasen eksisterer, og oppretter dem hvis ikke
+def tablecheck(mycursor, envtables, envtablecontent):
+    mycursor.execute("SHOW TABLES;")
+    temp = [x[0] for x in mycursor]
+    for i, tablename in enumerate(envtables):
+      con = envtablecontent[i]
+      if tablename not in temp:
+          mycursor.execute(f"CREATE TABLE IF NOT EXISTS {tablename} {con}")
+
+# Sender en gitt verdi til den spesifiserte tabelen
+def tester(mycursor, conn, xtable, val):
+    mycursor.execute(f"SELECT COUNT(*) FROM {xtable}")
+    count = mycursor.fetchone()[0]
+    if count == 0:
+        mycursor.execute(f"SELECT * FROM {xtable} LIMIT 0")
+        dc = [cl[0] for cl in mycursor.description]
+        if "id" in dc:
+          dc.remove("id")
+        elif "time" in dc:
+          dc.remove("time")
+        colnames = ", ".join(f"`{c}`" for c in dc)
+        placeholders = ", ".join(["%s"] * len(dc))
+        mycursor.executemany(f"INSERT INTO {xtable} ({colnames}) VALUES ({placeholders})", val)
+        conn.commit()
+
+# Setter in test kontoene og produktene i de relevante tabelene, hvis de ikke eksisterer
+def testinsert(mycursor, conn, envtables, mariadb):
+  userval = [
+              ("admin@live.no", generate_password_hash("hemmelig123"), 1, "admin"),
+              ("stian@live.no", generate_password_hash("stianpassword"), 1,"kunde"),
+              ("petter@live.no", generate_password_hash("petterpassword"), 1,"kunde")
+            ]
+  productval = [
+              ("Tine",  "gulost", 99.9, "FOOD", "Beste osten i byen", "1"),
+              ("Tine", "lett melk", 59.9, "FOOD", "Beste melken i byen", "1")
+            ]
+  try:
+      utable = None
+      ptable = None
+      for t in envtables:
+          if "users" in t.lower():
+              utable = t
+          elif "products" in t.lower():
+              ptable = t
+      if not utable or not ptable:
+          return
+      tester(mycursor, conn, utable, userval)
+      tester(mycursor, conn, ptable, productval)
+  except mariadb.Error as e:
+      print(f"Error connecting to MariaDB: {e}")
+
+# Skaper tilkobling til databasen
+def get_db_connection():
+    return mariadb.connect(
+        host = envhost,
+        user = envuser,
+        password = envpassword,
+        database = envdb
+    )
+
+# Kobler til serveren og skjekker om databasen og alle nødvendige tabeller eksisterer, så legger til test verdier om de ikke eksisterer
+try:
+    conn = mariadb.connect(
+    host = envhost,
+    user = envuser,
+    password = envpassword,
+    )
+    mycursor = conn.cursor()
+    dbcheck(mycursor, envdb)
+    conn = mariadb.connect(
+    host = envhost,
+    user = envuser,
+    password = envpassword,
+    database = envdb,
+    )
+    mycursor = conn.cursor()
+    tablecheck(mycursor, envtables, envtablecontent)
+    testinsert(mycursor, conn, envtables, mariadb)
+except mariadb.Error as e:
+    print(f"Error connecting to MariaDB: {e}")
+```
 
 * `/login` – håndterer innlogging
 ```python
