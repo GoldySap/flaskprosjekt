@@ -225,7 +225,7 @@ Denne databasemodellen er valgt fordi:
 ---
 
 SQL-eksempel:
-
+```sql
 CREATE TABLE users ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   email VARCHAR(255), \
@@ -233,7 +233,8 @@ CREATE TABLE users ( \
   active BOOL, \
   role VARCHAR(255) \
 );
-
+```
+```sql
 CREATE TABLE products ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   companyname VARCHAR(255) NOT NULL, \
@@ -243,7 +244,8 @@ CREATE TABLE products ( \
   description VARCHAR(255), \
   image VARCHAR(255) \
 );
-
+```
+```sql
 CREATE TABLE credentials ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   cardnumber VARCHAR(255) NOT NULL, \
@@ -253,7 +255,8 @@ CREATE TABLE credentials ( \
   active BOOL, \
   FOREIGN KEY (userid) REFERENCES users(id) \
 );
-
+```
+```sql
 CREATE TABLE billing ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   firstname VARCHAR(255), \
@@ -267,7 +270,8 @@ CREATE TABLE billing ( \
   userid INT, active BOOL, \
   FOREIGN KEY (userid) REFERENCES users(id) \
 );
-
+```
+```sql
 CREATE TABLE recipt ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   ordernumber VARCHAR(100) NOT NULL UNIQUE, \
@@ -282,6 +286,7 @@ CREATE TABLE recipt ( \
   FOREIGN KEY (credentialid) REFERENCES credentials(id), \
   FOREIGN KEY (billingid) REFERENCES billing(id)) \
 );
+```
 
 ---
 
