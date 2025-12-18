@@ -352,15 +352,19 @@ except mariadb.Error as e:
 @limiter.limit("10 per 1 minutes")
 def login():
     if request.method == "POST":
+        # Henter innloggings info fra innloggings formen
         email = request.form['email']
         password = request.form['password']
 
+        # Skaper tilkopling til databasen og henter den samsvarende kontoen til emailen angitt, hvis the er aktiv
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM users WHERE email=%s AND active=1", (email, ))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
+
+        # Skjekker om brukeren finnes, og om passordet matcher den samsvarende kontoen og om kontoen er aktive
         if user == None:
             return render_template("login.html", feil_melding="Account not found")
         if user and check_password_hash(user['password'], password) and user['active']:
@@ -378,6 +382,7 @@ def login():
 @app.route("/registrer", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        # Henter innloggings info fra innloggings formen
         email = request.form['email']
         password_raw = request.form['password']
         repassword_raw = request.form['retypeinput']
@@ -419,6 +424,7 @@ def register():
 
 * `/products` – viser produktkatalog
 ```python
+# Henter produktene fra product tabellen
 def productlistings():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -427,6 +433,7 @@ def productlistings():
     conn.close()
     return result
 
+# Opner siden med angitt produkter til å hvise dem grafiskk
 @app.route("/products")
 def products():
     result = productlistings()
@@ -545,8 +552,8 @@ def checkout_complete():
 
 ## 8. Sikkerhet og pålitelighet
 
-* `.env` brukt til sensitive verdier
-* Miljøvariabler for databasepålogging
+* Environment file (`.env`) brukt til oppbevaring av sensitive verdier.
+* Miljøvariabler for databasepålogging,  databasestruktur og sikkerhets nøkkel
 * Parameteriserte SQL-spørringer
 * Validering av input fra bruker
 * Feilhåndtering med `try/except`, `verdi sammenligning` og regulerte handlinger om hvise krav ikke møtes.
@@ -563,12 +570,17 @@ def checkout_complete():
 
 ### Løsning
 
-Feil ble løst ved bruk av logging, utskrift i konsoll og testing av SQL-spørringer direkte i databasen.
+Feil ble løst ved:
+* Bruk av logging
+* Utskrift i konsoll
+* Testing av SQL-spørringer direkte i databasen.
+* Ssh tilkobling til serveren for administrering av databasen direkte og værifisering av resultater.
 
 ### Testmetoder
 
 * Manuell testing av alle sider
 * Testing med ulike brukere og roller
+* Konsoll Utskrivelser
 
 ---
 
