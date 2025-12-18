@@ -31,7 +31,7 @@
             {% if card %}
                 <div class="checkout-box">
                     <p>Card ending in **** {{ card.cardnumber[-4:] }}</p>
-                    <p>Expires {{ card.expirationdate }}</p>
+                    <p>Expires ****{{ card.expirationdate[-4:] }}</p>
                     <a href="/profile" class="edit-link">Edit</a>
                 </div>
             {% else %}

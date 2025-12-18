@@ -26,22 +26,25 @@
                 <th>Role</th>
                 <th>Action</th>
                 </tr>
-                {% for result in results %}
+                {% for user in users %}
                 <tr>
                 <form action="/useradministration/update" method="post" class="edit-form">
-                    <td>{{ result.id }} <input type="hidden" name="id" value="{{ result.id }}"></td>
+                    <td>{{ user.id }} <input type="hidden" name="id" value="{{ user.id }}"></td>
 
-                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.name }}</td>
-                    <input type="hidden" name="name" value="{{ result.name }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.name }}</td>
+                    <input type="hidden" name="name" value="{{ user.name }}">
 
-                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.email }}</td>
-                    <input type="hidden" name="email" value="{{ result.email }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.email }}</td>
+                    <input type="hidden" name="email" value="{{ user.email }}">
 
-                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.password }}</td>
-                    <input type="hidden" name="password" value="{{ result.password }}" disabled>
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.password }}</td>
+                    <input type="hidden" name="password" value="****" disabled>
 
-                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ result.role }}</td>
-                    <input type="hidden" name="role" value="{{ result.role }}">
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.role }}</td>
+                    <input type="hidden" name="active" value="{{ user.active }}">
+
+                    <td contenteditable="true" oninput="this.nextElementSibling.value=this.innerText">{{ user.role }}</td>
+                    <input type="hidden" name="role" value="{{ user.role }}">
 
                     <button type="submit">Save</button>
                 </form>

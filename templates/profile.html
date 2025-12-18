@@ -19,13 +19,10 @@
             <h3>Personal Information</h3>
             <form id="infoForm">
                 <label>Name</label>
-                <input name="name" type="text" />
+                <input name="name" type="text" value="{{ user.name }}" />
                 
                 <label>Email</label>
-                <input name="email" type="email" />
-
-                <label>Phone</label>
-                <input name="phone" type="tel" />
+                <input name="email" type="email" value="{{ user.email }}" />
 
                 <button type="submit">Save</button>
             </form>

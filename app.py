@@ -90,7 +90,7 @@ def register():
     return render_template("login.html")
 
 @app.route("/login", methods=["GET", "POST"])
-@limiter.limit("10 per 10 minutes")
+@limiter.limit("10 per 1 minutes")
 def login():
     if request.method == "POST":
         email = request.form['email']
@@ -242,7 +242,7 @@ def checkout():
     if "id" not in session:
         return redirect("/login")
 
-    user_id = session["id"]
+    user_id = session.get("id")
 
     products = productlistings()
 
@@ -364,9 +364,7 @@ def order_success(order_id):
 
 @app.get("/profile")
 def profile():
-    user_id = session["id"]
-    if not user_id:
-        return redirect("/login")
+    user_id = session.get("id")
     
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
