@@ -64,11 +64,17 @@ Miljøvariabler
 
 Prosjektet benyttet GitHub Projects med Kanban-tavle:
 
+### Struktur
 * **Backlog**
 * **Ready**
 * **In Progress**
 * **In Review**
 * **Done**
+
+### Bilder
+<img width="823" height="312" alt="image" src="https://github.com/user-attachments/assets/b4b9f3fa-6bd9-472e-a610-8fadfbfea749" />
+
+<img width="546" height="312" alt="image" src="https://github.com/user-attachments/assets/53debf35-d45a-409d-a58f-2c1527fcddb1" />
 
 ### Refleksjon
 Kanban gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
