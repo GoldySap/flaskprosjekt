@@ -648,11 +648,20 @@ def checkout_complete():
 
 ## 8. Sikkerhet og pålitelighet
 
+### Generelt
 * Environment file (`.env`) brukt til oppbevaring av sensitive verdier.
 * Miljøvariabler for databasepålogging,  databasestruktur og sikkerhets nøkkel
 * Parameteriserte SQL-spørringer
 * Validering av input fra bruker
 * Feilhåndtering med `try/except`, `verdi sammenligning` og regulerte handlinger om hvise krav ikke møtes.
+
+### Roller og tilgang
+Applikasjonen benytter roller for å skille mellom brukertyper:
+- **Kunde:** kan handle produkter og se egen profil
+- **Admin:** har tilgang til administrasjonssider og produktstyring
+
+Rollen lagres i session og brukes for å kontrollere tilgang til bestemte funksjoner.
+
 
 ---
 
