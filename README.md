@@ -65,8 +65,10 @@ Miljøvariabler
 
 Prosjektet benyttet GitHub Projects med Kanban-tavle:
 
-* **To Do**
+* **Backlog**
+* **Ready**
 * **In Progress**
+* **In Review**
 * **Done**
 
 ### Refleksjon
