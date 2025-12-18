@@ -7,30 +7,50 @@ Dato: 11.11.2025
 
 ### Kort beskrivelse av prosjektet:
 Prosjektet går ut på at jeg skal lage en nettbutikk, der jeg utnytter 3 eller flere tabeler fra en database.
+Prosjektet går ut på å utvikle en nettbutikk ved hjelp av Flask og MariaDB. Applikasjonen benytter flere tabeller i databasen for å håndtere brukere, produkter, kjøp og betalingsinformasjon.
+
+---
 
 ## 2. Systembeskrivelse
 ### Formål med applikasjonen:
-Applikasjonen skal være en nettbutikk som inneholder en product katalog, en login og registrering for kontoer, en handlekurv for valgte producter, en kvitering av kjøp som kjøpe historikk, og bruker instilinger.
+Formålet med applikasjonen er å tilby en fungerende nettbutikk med følgende funksjonalitet:
+
+* Produktkatalog
+* Innlogging og registrering av brukere
+* Handlekurv for valgte produkter
+* Kvittering og kjøpshistorikk
+* Brukerinnstillinger og profilsider
 
 ### Brukerflyt:
-Brukeren starter på hjemmesiden der de kan bruke navbaren til å gå til de forskjellige sidene, som å logge inn, profil siden deres, gå til product katalogen, gå til deres handlekurv og retunere tilbake til hjemmesiden.
+Brukeren starter på hjemmesiden. Via navigasjonsmenyen kan brukeren:
+
+* Logge inn eller registrere seg
+* Se og redigere profilsiden sin
+* Bla gjennom produktkatalogen
+* Legge produkter i handlekurven
+* Fullføre kjøp og se ordrebekreftelse
+* Returnere til hjemmesiden når som helst
 
 ### Teknologier brukt:
-Python / Flask\
-MariaDB\
-HTML / CSS / JS / JQuery\
+* **Backend:** Python / Flask
+* **Database:** MariaDB
+* **Frontend:** HTML, CSS, JavaScript, jQuery
+
+---
 
 ## 3. Server-, infrastruktur- og nettverksoppsett
 ### Servermiljø
-Server: Rasberry PI 
-Operativsystem: Ubuntu
+* **Server:** Raspberry Pi
+* **Operativsystem:** Ubuntu Server
 
 ### Nettverksoppsett:
+
 Nettverksdiagram:\
-<img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />\
-IP-adresser: 10.200.14.20\
-Porter:\
-Brannmurregler:
+<img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />
+
+* **IP-adresse:** 10.200.14.20
+* **Porter:** 80 (HTTP)
+* **Brannmur:** Kun nødvendige porter åpne
 
 Eksempel:
 Klient → MariaDB
@@ -39,50 +59,94 @@ systemctl / Supervisor\
 Filrettigheter\
 Miljøvariabler
 
+---
+
 ## 4. Prosjektstyring -- GitHub Projects (Kanban)
-To Do / In Progress / Done\
-Issues\
-Skjermbilde (valgfritt)
-Refleksjon: Hvordan hjalp Kanban arbeidet?:
-Kanban har gjort det enkelt å planlege og holde styr å det som skal gjøres, er i progression eller ferdig.
+
+Prosjektet benyttet GitHub Projects med Kanban-tavle:
+
+* **To Do**
+* **In Progress**
+* **Done**
+
+### Refleksjon
+Kanban-metoden gjorde det enklere å planlegge arbeidet, holde oversikt over fremdrift og prioritere oppgaver underveis i prosjektet.
+
+---
 
 ## 5. Databasebeskrivelse
-Databasenavn:nettbutikk
 
-<img width="878" height="603" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
+**Databasenavn:** nettbutikk
 
-Tabeller:
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| users | id | INT | Primærnøkkel | 
-| users | email | VARCHAR(255) | Navn | 
-| users | password | VARCHAR(255) | Adresse |
-| users | active | BOOL | Navn | 
-| users | role | VARCHAR(255) | Adresse |
+**Diagram:** \
+<img width="439" height="301" alt="Nettbutikk_Diagram" src="https://github.com/user-attachments/assets/a543641c-a9c9-46d3-aef0-c72f7029c825" />
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| products | id | INT | Primærnøkkel | 
-| products | name | VARCHAR(255) | Navn | 
-| products | address | VARCHAR(255) | Adresse |
+### Tabeller
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| credentials | id | INT | Primærnøkkel | 
-| credentials | name | VARCHAR(255) | Navn | 
-| credentials | address | VARCHAR(255) | Adresse |
+#### users
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| billing | id | INT | Primærnøkkel | 
-| billing | name | VARCHAR(255) | Navn | 
-| billing | address | VARCHAR(255) | Adresse |
+| Tabell | Felt     | Datatype     | Beskrivelse          |
+| -------| -------- | ------------ | -------------------- |
+| users  | id       | INT          | Primærnøkkel         |
+| users  | email    | VARCHAR(255) | Brukerens e-post     |
+| users  | password | VARCHAR(255) | Hashet passord       |
+| users  | active   | BOOL         | Aktiv/inaktiv bruker |
+| users  | role     | VARCHAR(255) | Brukerrolle          |
 
-| Tabell | Felt | Datatype | Beskrivelse | 
-|--------|------|----------|-------------| 
-| recipt | id | INT | Primærnøkkel | 
-| recipt | name | VARCHAR(255) | Navn | 
-| recipt | address | VARCHAR(255) | Adresse |
+#### products
+
+| Tabell   | Felt        | Datatype     | Beskrivelse  |
+| -------- | ----------- | ------------ | ------------ |
+| products | id          | INT          | Primærnøkkel |
+| products | companyname | VARCHAR(255) | Leverandør   |
+| products | productname | VARCHAR(255) | Produktnavn  |
+| products | cost        | FLOAT        | Pris         |
+| products | category    | VARCHAR(255) | Kategori     |
+| products | description | VARCHAR(255) | Beskrivelse  |
+| products | image       | VARCHAR(255) | Bilde-URL    |
+
+#### credentials
+
+| Tabell      | Felt           | Datatype     | Beskrivelse           |
+| ----------- | -------------- | ------------ | --------------------- |
+| credentials | id             | INT          | Primærnøkkel          |
+| credentials | cardnumber     | VARCHAR(255) | Kortnummer            |
+| credentials | expirationdate | VARCHAR(255) | Utløpsdato            |
+| credentials | securitycode   | INT          | Sikkerhetskode        |
+| credentials | userid         | INT          | Referanse til bruker  |
+| credentials | active         | BOOL         | Aktiv betalingsmetode |
+
+#### billing
+
+| Tabell  | Felt        | Datatype     | Beskrivelse          |
+| ------- | ----------- | ------------ | -------------------- |
+| billing | id          | INT          | Primærnøkkel         |
+| billing | firstname   | VARCHAR(255) | Fornavn              |
+| billing | lastname    | VARCHAR(255) | Etternavn            |
+| billing | adressline1 | VARCHAR(255) | Adresse              |
+| billing | adressline2 | VARCHAR(255) | Tilleggsadresse      |
+| billing | country     | VARCHAR(255) | Land                 |
+| billing | state       | VARCHAR(255) | Fylke                |
+| billing | city        | VARCHAR(255) | By                   |
+| billing | zip         | INT          | Postnummer           |
+| billing | phonenumber | INT          | Telefonnummer        |
+| billing | userid      | INT          | Referanse til bruker |
+| billing | active      | BOOL         | Aktiv adresse        |
+
+#### recipt (kvittering)
+
+| Tabell | Felt         | Datatype     | Beskrivelse     |
+| ------ | ------------ | ------------ | --------------- |
+| recipt | id           | INT          | Primærnøkkel    |
+| recipt | ordernumber  | VARCHAR(100) | Ordrenummer     |
+| recipt | time         | TIMESTAMP    | Kjøpstidspunkt  |
+| recipt | cost         | FLOAT        | Totalpris       |
+| recipt | userid       | INT          | Bruker          |
+| recipt | productid    | INT          | Produkt         |
+| recipt | credentialid | INT          | Betalingsmetode |
+| recipt | billingid    | INT          | Fakturaadresse  |
+
+---
 
 SQL-eksempel:
 
@@ -108,7 +172,7 @@ CREATE TABLE credentials ( \
   id INT AUTO_INCREMENT PRIMARY KEY, \
   cardnumber VARCHAR(255) NOT NULL, \
   expirationdate VARCHAR(255) NOT NULL, \
-  securitycode INT NOT NULL, \
+  securitycode VARCHAR(255) NOT NULL, \
   userid INT, \
   active BOOL, \
   FOREIGN KEY (userid) REFERENCES users(id) \
@@ -181,23 +245,251 @@ HTML → Flask → MariaDB → Flask → HTML-tabell\
 eller\
 HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 
+---
+
 ## 7. Kodeforklaring
-Forklar ruter og funksjoner (kort).
+Her forklares hovedrutene i Flask-applikasjonen, for eksempel:
+
+* `/login` – håndterer innlogging
+```python
+@app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per 1 minutes")
+def login():
+    if request.method == "POST":
+        email = request.form['email']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s AND active=1", (email, ))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if user == None:
+            return render_template("login.html", feil_melding="Account not found")
+        if user and check_password_hash(user['password'], password) and user['active']:
+            session['id'] = user['id']
+            session['email'] = user['email']
+            session['role'] = user['role']
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", feil_melding="Incorrect email or password")
+    return render_template("login.html")
+```
+
+* `/register` – registrering av brukere
+```python
+@app.route("/registrer", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form['email']
+        password_raw = request.form['password']
+        repassword_raw = request.form['retypeinput']
+        password = request.form['password']
+
+        hashed = hashlib.sha256(password.encode()).hexdigest()
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
+        existing = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if existing:
+            return render_template("login.html", feil_melding="Email already in use")
+
+        if password_raw != repassword_raw:
+            return render_template("login.html", feil_melding="Password mismatch")
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (email, password, active, role) VALUES (%s, %s, %s, %s)", (email, hashed, True, 'kunde'))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash("User Registered", "success")
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email, ))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        session['email'] = user['email']
+        session['role'] = user['role']
+        return redirect(url_for("index"))
+    return render_template("login.html")
+```
+
+* `/products` – viser produktkatalog
+```python
+def productlistings():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products")
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+@app.route("/products")
+def products():
+    result = productlistings()
+    return render_template("products.html", products=result)
+```
+
+* `/checkout` – gjennomfører kjøp
+```python
+@app.route("/checkout")
+def checkout():
+    if "id" not in session:
+        return redirect("/login")
+
+    user_id = session.get("id")
+
+    products = productlistings()
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM billing WHERE userid=%s AND active=1", (user_id,))
+    billing = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM credentials WHERE userid=%s AND active=1", (user_id,))
+    card = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    cart = session.get("cart", {})
+    cart_items = []
+    total = 0
+
+    for pid, qty in cart.items():
+        product = next((p for p in products if str(p["id"]) == str(pid)), None)
+        if product:
+            subtotal = round(product["cost"] * qty, 2)
+            total += subtotal
+            cart_items.append({
+                "id": product["id"],
+                "name": product["productname"],
+                "price": product["cost"],
+                "qty": qty,
+                "subtotal": subtotal,
+                "image": product["image"]
+            })
+
+    return render_template(
+        "checkout.html",
+        cart=cart_items,
+        billing=billing,
+        card=card,
+        total=total
+    )
+
+
+@app.post("/checkout/complete")
+def checkout_complete():
+    user_id = session.get("id")
+    cart = session.get("cart", {})
+    products = productlistings()
+
+    if not cart:
+        return redirect("/cart")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT id FROM billing WHERE userid=%s AND active=1", (user_id,))
+    billing = cursor.fetchone()
+
+    cursor.execute("SELECT id FROM credentials WHERE userid=%s AND active=1", (user_id,))
+    card = cursor.fetchone()
+
+    if not billing or not card:
+        return redirect("/checkout")
+    
+    cart = session.get("cart", {})
+    cart_items = []
+    total = 0
+
+    for pid, qty in cart.items():
+        product = next((p for p in products if str(p["id"]) == str(pid)), None)
+        if product:
+            subtotal = round(product["cost"] * qty, 2)
+            total += subtotal
+            cart_items.append({
+                "id": product["id"],
+                "name": product["productname"],
+                "price": product["cost"],
+                "qty": qty,
+                "subtotal": subtotal,
+                "image": product["image"]
+            })
+
+    while True:
+        for item in cart_items:
+            order_id = generate_order_number()
+            cursor.execute("SELECT 1 FROM recipt WHERE ordernumber=%s", (order_id,))
+            if not cursor.fetchone():
+                cursor.execute("""
+                    INSERT INTO recipt (ordernumber, cost, userid, productid, credentialid, billingid)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (order_id, item["subtotal"], user_id, item["id"], card["id"], billing["id"]))
+                conn.commit()
+        break
+
+    cursor.close()
+    conn.close()
+
+    session["cart"] = []
+
+    return render_template("ordersuccess.html", order_id=order_id)
+```
+---
 
 ## 8. Sikkerhet og pålitelighet
-.env: Ja \
-Miljøvariabler: ja \
-Parameteriserte spørringer: ja\
-Validering: Ja \
-Feilhåndtering: delvis
+
+* `.env` brukt til sensitive verdier
+* Miljøvariabler for databasepålogging
+* Parameteriserte SQL-spørringer
+* Validering av input fra bruker
+* Feilhåndtering med `try/except`, `verdi sammenligning` og regulerte handlinger om hvise krav ikke møtes.
+
+---
 
 ## 9. Feilsøking og testing
-Typiske feil:\
-Hvordan du løste dem:\
-Testmetoder:
+### Typiske feil
+
+* Databaseforbindelse feilet
+* Feil i SQL-spørringer
+* Manglende validering av input
+* Syntaxs
+
+### Løsning
+
+Feil ble løst ved bruk av logging, utskrift i konsoll og testing av SQL-spørringer direkte i databasen.
+
+### Testmetoder
+
+* Manuell testing av alle sider
+* Testing med ulike brukere og roller
+
+---
 
 ## 10. Konklusjon og refleksjon
-Hva lærte du?:\
-Hva fungerte bra?:\
-Hva ville du gjort annerledes?:\
-Hva var utfordrende?:
+
+### Hva lærte du?
+
+Jeg lærte hvordan man bygger en fullstack-applikasjon med HTML, CSS, JS, PYTHON Flask og Mariadb database.
+
+### Hva fungerte bra?
+
+Databasekobling og struktur fungerte stabilt.
+
+### Hva var utfordrende?
+
+Håndtering av relasjoner mellom tabeller og feilsøking i backend.
+
+### Hva ville du gjort annerledes?
+
+Jeg ville planlagt databasemodellen enda bedre før koding startet.
