@@ -159,7 +159,7 @@ Denne databasemodellen er valgt fordi:
 ---
 
 ### Tabeller
-#### users
+#### users tabel
 
 | Tabell | Felt     | Datatype     | Beskrivelse          |
 | -------| -------- | ------------ | -------------------- |
@@ -169,7 +169,7 @@ Denne databasemodellen er valgt fordi:
 | users  | active   | BOOL         | Aktiv/inaktiv bruker |
 | users  | role     | VARCHAR(255) | Brukerrolle          |
 
-#### products
+#### products tabel
 
 | Tabell   | Felt        | Datatype     | Beskrivelse  |
 | -------- | ----------- | ------------ | ------------ |
@@ -181,7 +181,7 @@ Denne databasemodellen er valgt fordi:
 | products | description | VARCHAR(255) | Beskrivelse  |
 | products | image       | VARCHAR(255) | Bilde-URL    |
 
-#### credentials
+#### credentials tabel
 
 | Tabell      | Felt           | Datatype     | Beskrivelse           |
 | ----------- | -------------- | ------------ | --------------------- |
@@ -192,7 +192,7 @@ Denne databasemodellen er valgt fordi:
 | credentials | userid         | INT          | Referanse til bruker  |
 | credentials | active         | BOOL         | Aktiv betalingsmetode |
 
-#### billing
+#### billing tabel
 
 | Tabell  | Felt        | Datatype     | Beskrivelse          |
 | ------- | ----------- | ------------ | -------------------- |
@@ -209,7 +209,7 @@ Denne databasemodellen er valgt fordi:
 | billing | userid      | INT          | Referanse til bruker |
 | billing | active      | BOOL         | Aktiv adresse        |
 
-#### recipt (kvittering)
+#### recipt (kvittering) tabel
 
 | Tabell | Felt         | Datatype     | Beskrivelse     |
 | ------ | ------------ | ------------ | --------------- |
@@ -225,66 +225,75 @@ Denne databasemodellen er valgt fordi:
 ---
 
 SQL-eksempel:
+#### users tabel
 ```sql
-CREATE TABLE users ( \
-  id INT AUTO_INCREMENT PRIMARY KEY, \
-  email VARCHAR(255), \
-  password VARCHAR(255), \
-  active BOOL, \
-  role VARCHAR(255) \
+CREATE TABLE users ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  email VARCHAR(255), 
+  password VARCHAR(255), 
+  active BOOL, 
+  role VARCHAR(255) 
 );
 ```
+
+#### products tabel
 ```sql
-CREATE TABLE products ( \
-  id INT AUTO_INCREMENT PRIMARY KEY, \
-  companyname VARCHAR(255) NOT NULL, \
-  productname VARCHAR(255) NOT NULL, \
-  cost FLOAT NOT NULL, \
-  category VARCHAR(255), \
-  description VARCHAR(255), \
+CREATE TABLE products ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  companyname VARCHAR(255) NOT NULL,
+  productname VARCHAR(255) NOT NULL, 
+  cost FLOAT NOT NULL, 
+  category VARCHAR(255), 
+  description VARCHAR(255), 
   image VARCHAR(255) \
 );
 ```
+
+#### credentials tabel
 ```sql
-CREATE TABLE credentials ( \
-  id INT AUTO_INCREMENT PRIMARY KEY, \
-  cardnumber VARCHAR(255) NOT NULL, \
-  expirationdate VARCHAR(255) NOT NULL, \
-  securitycode VARCHAR(255) NOT NULL, \
-  userid INT, \
-  active BOOL, \
-  FOREIGN KEY (userid) REFERENCES users(id) \
+CREATE TABLE credentials ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  cardnumber VARCHAR(255) NOT NULL, 
+  expirationdate VARCHAR(255) NOT NULL, 
+  securitycode VARCHAR(255) NOT NULL, 
+  userid INT, 
+  active BOOL, 
+  FOREIGN KEY (userid) REFERENCES users(id) 
 );
 ```
+
+#### billing tabel
 ```sql
-CREATE TABLE billing ( \
-  id INT AUTO_INCREMENT PRIMARY KEY, \
-  firstname VARCHAR(255), \
-  lastname VARCHAR(255) NOT NULL, \
-  adressline1 VARCHAR(255), \
-  adressline2 VARCHAR(255), \
-  country VARCHAR(255), \
-  state VARCHAR(255), \
-  city VARCHAR(255), \
-  zip INT, phonenumber INT, \
-  userid INT, active BOOL, \
-  FOREIGN KEY (userid) REFERENCES users(id) \
+CREATE TABLE billing ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  firstname VARCHAR(255), 
+  lastname VARCHAR(255) NOT NULL, 
+  adressline1 VARCHAR(255), 
+  adressline2 VARCHAR(255), 
+  country VARCHAR(255), 
+  state VARCHAR(255), 
+  city VARCHAR(255), 
+  zip INT, phonenumber INT, 
+  userid INT, active BOOL, 
+  FOREIGN KEY (userid) REFERENCES users(id) 
 );
 ```
+
+#### recipt (kvittering) tabel
 ```sql
-CREATE TABLE recipt ( \
-  id INT AUTO_INCREMENT PRIMARY KEY, \
-  ordernumber VARCHAR(100) NOT NULL UNIQUE, \
-  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, \
-  cost FLOAT, \
-  userid INT, \
-  productid INT, \
-  credentialid INT, \
-  billingid INT, \
-  FOREIGN KEY (userid) REFERENCES users(id), \
-  FOREIGN KEY (productid) REFERENCES products(id), \
-  FOREIGN KEY (credentialid) REFERENCES credentials(id), \
-  FOREIGN KEY (billingid) REFERENCES billing(id)) \
+CREATE TABLE recipt ( 
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  ordernumber VARCHAR(100) NOT NULL UNIQUE, 
+  time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+  cost FLOAT, 
+  userid INT, 
+  productid INT, 
+  credentialid INT, 
+  billingid INT, 
+  FOREIGN KEY (userid) REFERENCES users(id), 
+  FOREIGN KEY (productid) REFERENCES products(id), 
+  FOREIGN KEY (credentialid) REFERENCES credentials(id), 
+  FOREIGN KEY (billingid) REFERENCES billing(id)) 
 );
 ```
 
@@ -324,7 +333,7 @@ projectnavn \
   ├── inspiration.py \
   └── README.md \
 Databasestrøm:
-HTML → Flask → MariaDB → Flask → HTML-tabell\
+HTML → Flask → MariaDB → Flask → HTML\
 eller\
 HTML → JS/Jquery → Flask → MariaDB → Flask → HTML\
 
