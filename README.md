@@ -31,8 +31,9 @@ Brukeren starter på hjemmesiden. Via navigasjonsmenyen kan brukeren:
 * Returnere til hjemmesiden når som helst
 
 ### Teknologier brukt:
-* **Backend:** Python / Flask
+* **Server:** Raspberry Pi
 * **Database:** MariaDB
+* **Backend:** Python / Flask
 * **Frontend:** HTML, CSS, JavaScript, jQuery
 
 ---
@@ -48,7 +49,7 @@ Nettverksdiagram:\
 <img width="424" height="384" alt="Diagram" src="https://github.com/user-attachments/assets/8722f083-4119-4ba0-b96c-180cca1bea69" />
 
 * **IP-adresse:** 10.200.14.20
-* **Porter:** 80 (HTTP)
+* **Porter:** 80 (HTTP), 5000 (VScode/flask)
 * **Brannmur:** Kun nødvendige porter åpne
 
 Eksempel:
@@ -226,6 +227,11 @@ Denne databasemodellen er valgt fordi:
 ---
 
 SQL-eksempel:
+#### Database
+```sql
+CREATE DATABASE nettbutikk
+```
+
 #### users tabell
 ```sql
 CREATE TABLE users ( 
